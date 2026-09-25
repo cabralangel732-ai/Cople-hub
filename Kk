@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Panel Simulator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #18294a 0%, #080b14 45%, #030407 100%);
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Botón flotante */
+#floatingButton {
+  position: fixed;
+  left: 25px;
+  top: 120px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00eaff, #0066ff);
+  box-shadow: 0 0 25px #00c8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  cursor: grab;
+  z-index: 9999;
+  touch-action: none;
+}
+
+#floatingButton:active {
+  cursor: grabbing;
+}
+
+/* Panel */
+.panel {
+  width: min(390px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 5vh auto;
+  padding: 22px;
+  border: 1px solid rgba(0,234,255,.4);
+  border-radius: 22px;
+  background: rgba(7, 12, 25, .94);
+  box-shadow:
+    0 0 35px rgba(0,200,255,.18),
+    inset 0 0 30px rgba(0,100,255,.05);
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+  color: #00eaff;
+  text-shadow: 0 0 15px #00eaff;
+}
+
+.subtitle {
+  text-align: center;
+  color: #8895aa;
+  font-size: 12px;
+  margin: 6px 0 20px;
+}
+
+.section {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 15px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.section-title {
+  color: #00eaff;
+  font-weight: bold;
+  margin-bottom: 13px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.option small {
+  display: block;
+  color: #7f8a9d;
+  margin-top: 3px;
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  width: 48px;
+  height: 25px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: #252c3a;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  width: 19px;
+  height: 19px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #aaa;
+  transition: .25s;
+}
+
+input:checked + .slider {
+  background: #006dff;
+  box-shadow: 0 0 12px #0077ff;
+}
+
+input:checked + .slider:before {
+  transform: translateX(23px);
+  background: white;
+}
+
+/* Sliders */
+.range-row {
+  margin: 13px 0;
+}
+
+.range-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.range-value {
+  color: #00eaff;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #00c8ff;
+}
+
+/* Vida */
+.health-box {
+  margin-top: 15px;
+}
+
+.health-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+
+.health-bar {
+  width: 100%;
+  height: 13px;
+  background: #202735;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.health-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #00ff73, #00d9ff);
+  box-shadow: 0 0 12px #00ff88;
+  transition: width .3s;
+}
+
+/* Botón */
+button {
+  width: 100%;
+  border: none;
+  margin-top: 15px;
+  padding: 13px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #006eff, #00cfff);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(0,180,255,.25);
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.status {
+  text-align: center;
+  margin-top: 12px;
+  color: #68758a;
+  font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Botón flotante -->
+<div id="floatingButton">⚡</div>
+
+<div class="panel">
+
+  <div class="logo">⚡ FF PANEL</div>
+  <div class="subtitle">SIMULADOR • MODO VISUAL</div>
+
+  <div class="section">
+    <div class="section-title">🎯 Funciones</div>
+
+    <div class="option">
+      <div>
+        Aimbot
+        <small>Simulación visual</small>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="aimbot">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="option">
+      <div>
+        Velocidad
+        <small>Control del simulador</small>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="speed">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="option">
+      <div>
+        Vida infinita
+        <small>Solo demostración</small>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="godmode">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="option">
+      <div>
+        Modo FPS
+        <small>Interfaz de rendimiento</small>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="fps">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⚙️ Ajustes</div>
+
+    <div class="range-row">
+      <div class="range-header">
+        <span>Sensibilidad</span>
+        <span class="range-value" id="sensValue">50</span>
+      </div>
+      <input type="range" min="0" max="100" value="50" id="sens">
+    </div>
+
+    <div class="range-row">
+      <div class="range-header">
+        <span>Velocidad</span>
+        <span class="range-value" id="speedValue">50</span>
+      </div>
+      <input type="range" min="0" max="100" value="50" id="speedRange">
+    </div>
+
+    <div class="range-row">
+      <div class="range-header">
+        <span>FOV</span>
+        <span class="range-value" id="fovValue">90</span>
+      </div>
+      <input type="range" min="30" max="150" value="90" id="fov">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">❤️ Estado</div>
+
+    <div class="health-box">
+      <div class="health-header">
+        <span>Vida</span>
+        <span id="healthText">100 / 100</span>
+      </div>
+
+      <div class="health-bar">
+        <div class="health-fill" id="healthFill"></div>
+      </div>
+    </div>
+
+    <button id="healButton">❤️ Restaurar vida</button>
+    <button id="resetButton">↻ Restablecer panel</button>
+  </div>
+
+  <div class="status" id="status">
+    Estado: listo
+  </div>
+
+</div>
+
+<script>
+const floatingButton = document.getElementById("floatingButton");
+const panel = document.querySelector(".panel");
+const status = document.getElementById("status");
+
+let dragging = false;
+let offsetX = 0;
+let offsetY = 0;
+
+/* Botón flotante movible con mouse y táctil */
+function startDrag(e) {
+  dragging = true;
+
+  const point = e.touches ? e.touches[0] : e;
+
+  const rect = floatingButton.getBoundingClientRect();
+
+  offsetX = point.clientX - rect.left;
+  offsetY = point.clientY - rect.top;
+}
+
+function moveDrag(e) {
+  if (!dragging) return;
+
+  const point = e.touches ? e.touches[0] : e;
+
+  let x = point.clientX - offsetX;
+  let y = point.clientY - offsetY;
+
+  x = Math.max(0, Math.min(window.innerWidth - 62, x));
+  y = Math.max(0, Math.min(window.innerHeight - 62, y));
+
+  floatingButton.style.left = x + "px";
+  floatingButton.style.top = y + "px";
+}
+
+function stopDrag() {
+  dragging = false;
+}
+
+floatingButton.addEventListener("mousedown", startDrag);
+document.addEventListener("mousemove", moveDrag);
+document.addEventListener("mouseup", stopDrag);
+
+floatingButton.addEventListener("touchstart", startDrag, {passive:false});
+document.addEventListener("touchmove", moveDrag, {passive:false});
+document.addEventListener("touchend", stopDrag);
+
+/* Abrir/cerrar panel */
+floatingButton.addEventListener("click", () => {
+  if (!dragging) {
+    panel.style.display =
+      panel.style.display === "none" ? "block" : "none";
+  }
+});
+
+/* Sliders */
+const sens = document.getElementById("sens");
+const speedRange = document.getElementById("speedRange");
+const fov = document.getElementById("fov");
+
+sens.addEventListener("input", () => {
+  document.getElementById("sensValue").textContent = sens.value;
+});
+
+speedRange.addEventListener("input", () => {
+  document.getElementById("speedValue").textContent =
+    speedRange.value;
+});
+
+fov.addEventListener("input", () => {
+  document.getElementById("fovValue").textContent = fov.value;
+});
+
+/* Switches */
+document.querySelectorAll(".switch input").forEach(input => {
+  input.addEventListener("change", () => {
+
+    const names = {
+      aimbot: "Aimbot",
+      speed: "Velocidad",
+      godmode: "Vida infinita",
+      fps: "Modo FPS"
+    };
+
+    status.textContent =
+      names[input.id] +
+      ": " +
+      (input.checked ? "ACTIVADO (simulación)" : "DESACTIVADO");
+  });
+});
+
+/* Vida */
+let health = 100;
+
+const healthFill = document.getElementById("healthFill");
+const healthText = document.getElementById("healthText");
+
+function updateHealth() {
+  healthFill.style.width = health + "%";
+  healthText.textContent = health + " / 100";
+}
+
+document.getElementById("healButton").addEventListener("click", () => {
+  health = 100;
+  updateHealth();
+  status.textContent = "Vida restaurada en el simulador";
+});
+
+/* Restablecer */
+document.getElementById("resetButton").addEventListener("click", () => {
+
+  document.querySelectorAll(".switch input").forEach(input => {
+    input.checked = false;
+  });
+
+  sens.value = 50;
+  speedRange.value = 50;
+  fov.value = 90;
+
+  document.getElementById("sensValue").textContent = "50";
+  document.getElementById("speedValue").textContent = "50";
+  document.getElementById("fovValue").textContent = "90";
+
+  health = 100;
+  updateHealth();
+
+  status.textContent = "Panel restablecido";
+});
+</script>
+
+</body>
+</html>
