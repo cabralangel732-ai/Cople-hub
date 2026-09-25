@@ -1,0 +1,67 @@
+-- ==========================================
+-- SCRIPT BÁSICO PARA DUPLICAR (CLONAR) OBJETOS
+-- ==========================================
+
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+
+-- Interfaz simple con un botón para duplicar
+local ScreenGui = Instance.new("ScreenGui")
+local DupBtn = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+
+ScreenGui.Name = "DuplicatorGui"
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+DupBtn.Parent = ScreenGui
+DupBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+DupBtn.Position = UDim2.new(0.5, -60, 0.85, 0)
+DupBtn.Size = UDim2.new(0, 120, 0, 40)
+DupBtn.Font = Enum.Font.GothamBold
+DupBtn.Text = "¡DUPLICAR!"
+DupBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+DupBtn.TextSize = 14
+
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = DupBtn
+
+-- Función al presionar el botón de duplicar
+DupBtn.MouseButton1Click:Connect(function()
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+
+    -- Busca el objeto más cercano dentro del Workspace (en un radio de 10 bloques)
+    local closestPart = nil
+    local shortestDistance = 15
+
+    for _, obj in ipairs(Workspace:GetChildren()) do
+        if obj:IsA("BasePart") or obj:IsA("Model") then
+            local targetPart = obj:IsA("Model") and obj.PrimaryPart or obj
+            if targetPart and targetPart:IsA("BasePart") then
+                local distance = (hrp.Position - targetPart.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestPart = obj
+                end
+            end
+        end
+    end
+
+    -- Si encuentra un objeto cerca, lo clona y lo coloca al lado tuyo
+    if closestPart then
+        local clone = closestPart:Clone()
+        if clone:IsA("Model") then
+            if clone.PrimaryPart then
+                clone:SetPrimaryPartCFrame(hrp.CFrame + Vector3.new(3, 0, 3))
+            end
+        elseif clone:IsA("BasePart") then
+            clone.Position = hrp.Position + Vector3.new(3, 0, 3)
+        end
+        clone.Parent = Workspace
+        print("¡Objeto duplicado con éxito: " .. closestPart.Name .. "!")
+    else
+        print("No hay ningún objeto cerca para duplicar.")
+    end
+end)
