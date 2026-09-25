@@ -1,0 +1,290 @@
+-- ==========================================
+-- CUSTOM HUB UNIVERSAL - AZUL Y AMARILLO (FLY PRO + NOCLIP)
+-- ==========================================
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+pcall(function()
+    if CoreGui:FindFirstChild("CustomBlueYellowHub") then
+        CoreGui.CustomBlueYellowHub:Destroy()
+    end
+end)
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TopBar = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local ToggleUIBtn = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
+local ContentFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+
+-- Botones y Controles
+local FlyBtn = Instance.new("TextButton")
+local UICorner_4 = Instance.new("UICorner")
+
+local SpeedUpBtn = Instance.new("TextButton")
+local UICorner_5 = Instance.new("UICorner")
+
+local SpeedDownBtn = Instance.new("TextButton")
+local UICorner_6 = Instance.new("UICorner")
+
+local SpeedLabel = Instance.new("TextLabel")
+
+local NoclipBtn = Instance.new("TextButton")
+local UICorner_7 = Instance.new("UICorner")
+
+ScreenGui.Name = "CustomBlueYellowHub"
+ScreenGui.Parent = CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 25, 50)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)
+MainFrame.Size = UDim2.new(0, 300, 0, 310)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+TopBar.Name = "TopBar"
+TopBar.Parent = MainFrame
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 35, 70)
+TopBar.Size = UDim2.new(0, 300, 0, 40)
+
+UICorner_2.CornerRadius = UDim.new(0, 10)
+UICorner_2.Parent = TopBar
+
+Title.Name = "Title"
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.Size = UDim2.new(0, 200, 0, 40)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "UNIVERSAL HUB PRO"
+Title.TextColor3 = Color3.fromRGB(255, 220, 0)
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+ToggleUIBtn.Name = "ToggleUIBtn"
+ToggleUIBtn.Parent = TopBar
+ToggleUIBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+ToggleUIBtn.Position = UDim2.new(0, 255, 0, 8)
+ToggleUIBtn.Size = UDim2.new(0, 35, 0, 24)
+ToggleUIBtn.Font = Enum.Font.GothamBold
+ToggleUIBtn.Text = "-"
+ToggleUIBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+ToggleUIBtn.TextSize = 18
+
+UICorner_3.CornerRadius = UDim.new(0, 6)
+UICorner_3.Parent = ToggleUIBtn
+
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Parent = MainFrame
+ContentFrame.Active = true
+ContentFrame.BackgroundColor3 = Color3.fromRGB(25, 40, 75)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Position = UDim2.new(0, 10, 0, 50)
+ContentFrame.Size = UDim2.new(0, 280, 0, 250)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 270)
+ContentFrame.ScrollBarThickness = 6
+
+UIListLayout.Parent = ContentFrame
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 10)
+
+-- Botón Fly
+FlyBtn.Name = "FlyBtn"
+FlyBtn.Parent = ContentFrame
+FlyBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+FlyBtn.Size = UDim2.new(0, 260, 0, 45)
+FlyBtn.Font = Enum.Font.GothamBold
+FlyBtn.Text = "FLY: APAGADO"
+FlyBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+FlyBtn.TextSize = 15
+UICorner_4.CornerRadius = UDim.new(0, 8)
+UICorner_4.Parent = FlyBtn
+
+-- Velocidad Label y Controles
+SpeedLabel.Name = "SpeedLabel"
+SpeedLabel.Parent = ContentFrame
+SpeedLabel.BackgroundTransparency = 1
+SpeedLabel.Size = UDim2.new(0, 260, 0, 25)
+SpeedLabel.Font = Enum.Font.GothamBold
+SpeedLabel.Text = "VELOCIDAD: 50 (MAX: 100)"
+SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedLabel.TextSize = 13
+
+SpeedDownBtn.Name = "SpeedDownBtn"
+SpeedDownBtn.Parent = ContentFrame
+SpeedDownBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+SpeedDownBtn.Size = UDim2.new(0, 125, 0, 35)
+SpeedDownBtn.Font = Enum.Font.GothamBold
+SpeedDownBtn.Text = "(- ) BAJAR"
+SpeedDownBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
+SpeedDownBtn.TextSize = 13
+UICorner_5.CornerRadius = UDim.new(0, 6)
+UICorner_5.Parent = SpeedDownBtn
+
+SpeedUpBtn.Name = "SpeedUpBtn"
+SpeedUpBtn.Parent = ContentFrame
+SpeedUpBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+SpeedUpBtn.Size = UDim2.new(0, 125, 0, 35)
+SpeedUpBtn.Font = Enum.Font.GothamBold
+SpeedUpBtn.Text = "(+ ) SUBIR"
+SpeedUpBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
+SpeedUpBtn.TextSize = 13
+UICorner_6.CornerRadius = UDim.new(0, 6)
+UICorner_6.Parent = SpeedUpBtn
+
+-- Botón Noclip
+NoclipBtn.Name = "NoclipBtn"
+NoclipBtn.Parent = ContentFrame
+NoclipBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+NoclipBtn.Size = UDim2.new(0, 260, 0, 45)
+NoclipBtn.Font = Enum.Font.GothamBold
+NoclipBtn.Text = "NOCLIP (PAREDES): APAGADO"
+NoclipBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+NoclipBtn.TextSize = 14
+UICorner_7.CornerRadius = UDim.new(0, 8)
+UICorner_7.Parent = NoclipBtn
+
+-- Minimizar
+local minimized = false
+ToggleUIBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        ContentFrame.Visible = false
+        MainFrame.Size = UDim2.new(0, 300, 0, 40)
+        ToggleUIBtn.Text = "+"
+    else
+        ContentFrame.Visible = true
+        MainFrame.Size = UDim2.new(0, 300, 0, 310)
+        ToggleUIBtn.Text = "-"
+    end
+end)
+
+-- Variables de Estado
+getgenv().FlyActive = false
+getgenv().NoclipActive = false
+getgenv().FlySpeed = 50
+local bv, bg
+
+-- Controles de Velocidad
+SpeedUpBtn.MouseButton1Click:Connect(function()
+    if getgenv().FlySpeed < 100 then
+        getgenv().FlySpeed = getgenv().FlySpeed + 10
+        SpeedLabel.Text = "VELOCIDAD: " .. getgenv().FlySpeed .. " (MAX: 100)"
+    end
+end)
+
+SpeedDownBtn.MouseButton1Click:Connect(function()
+    if getgenv().FlySpeed > 10 then
+        getgenv().FlySpeed = getgenv().FlySpeed - 10
+        SpeedLabel.Text = "VELOCIDAD: " .. getgenv().FlySpeed .. " (MAX: 100)"
+    end
+end)
+
+-- Activar/Desactivar Fly
+FlyBtn.MouseButton1Click:Connect(function()
+    getgenv().FlyActive = not getgenv().FlyActive
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+    if getgenv().FlyActive then
+        FlyBtn.Text = "FLY: ENCENDIDO"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+        
+        if humanoid then 
+            humanoid.PlatformStand = true 
+            local animator = humanoid:FindFirstChildOfClass("Animator")
+            if animator then
+                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                    track:Stop()
+                end
+            end
+        end
+
+        bv = Instance.new("BodyVelocity")
+        bv.Name = "HubFlyVel"
+        bv.Parent = hrp
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.new(0, 0, 0)
+
+        bg = Instance.new("BodyGyro")
+        bg.Name = "HubFlyGyro"
+        bg.Parent = hrp
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.CFrame = hrp.CFrame
+    else
+        FlyBtn.Text = "FLY: APAGADO"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+        
+        if hrp:FindFirstChild("HubFlyVel") then hrp.HubFlyVel:Destroy() end
+        if hrp:FindFirstChild("HubFlyGyro") then hrp.HubFlyGyro:Destroy() end
+        if humanoid then humanoid.PlatformStand = false end
+    end
+end)
+
+-- Activar/Desactivar Noclip (Traspasar paredes)
+NoclipBtn.MouseButton1Click:Connect(function()
+    getgenv().NoclipActive = not getgenv().NoclipActive
+    if getgenv().NoclipActive then
+        NoclipBtn.Text = "NOCLIP (PAREDES): ENCENDIDO"
+        NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+    else
+        NoclipBtn.Text = "NOCLIP (PAREDES): APAGADO"
+        NoclipBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+    end
+end)
+
+-- Bucle de Rendimiento (Fluidez y Noclip)
+RunService.Stepped:Connect(function()
+    if getgenv().NoclipActive and player.Character then
+        for _, part in ipairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if getgenv().FlyActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        local cam = workspace.CurrentCamera
+        
+        if hrp:FindFirstChild("HubFlyVel") and hrp:FindFirstChild("HubFlyGyro") then
+            bg.CFrame = cam.CFrame
+            
+            if humanoid then
+                local animator = humanoid:FindFirstChildOfClass("Animator")
+                if animator then
+                    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                        if track.Name == "RunAnimation" or track.Name == "WalkAnimation" then
+                            track:Stop()
+                        end
+                    end
+                end
+
+                local moveDir = humanoid.MoveDirection
+                if moveDir.Magnitude > 0 then
+                    bv.Velocity = cam.CFrame:VectorToWorldSpace(Vector3.new(moveDir.X, 0, moveDir.Z)) * getgenv().FlySpeed
+                else
+                    bv.Velocity = Vector3.new(0, 0, 0)
+                end
+            end
+        end
+    end
+end)
