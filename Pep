@@ -1,0 +1,36 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local player = Players.LocalPlayer
+
+-- Función de ejemplo para buscar objetivos en el juego
+local function buscarObjetivo(nombreObjetivo)
+    for _, objeto in ipairs(Workspace:GetDescendants()) do
+        if objeto.Name == nombreObjetivo and objeto:IsA("Model") then
+            -- Verifica si tiene una parte principal para ubicarlo
+            if objeto.PrimaryPart or objeto:FindFirstChild("HumanoidRootPart") then
+                return objeto
+            end
+        end
+    end
+    return nil
+end
+
+-- Función de Auto-Farm / Auto-Click simulado
+local function iniciarAutoFarm(nombreObjetivo, mutacionDeseada)
+    task.spawn(function()
+        while true do
+            local objetivo = buscarObjetivo(nombreObjetivo)
+            if objetivo then
+                -- Simula la acción hacia el objetivo encontrado
+                print("Objetivo encontrado:", objetivo.Name)
+                
+                -- Aquí iría la lógica para interactuar o enviar el Remote al servidor
+                -- Ejemplo: game.ReplicatedStorage.RemoteEvent:FireServer(objetivo, mutacionDeseada)
+            end
+            task.wait(1) -- Pausa para evitar saturar el rendimiento
+        end
+    end)
+end
+
+-- Ejemplo de llamada: Buscar un "BrainrotEntity" específico
+-- iniciarAutoFarm("BrainrotEntity", "Shiny")
