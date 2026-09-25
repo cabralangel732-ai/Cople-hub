@@ -1,0 +1,55 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = Players.LocalPlayer
+
+-- Panel de configuración avanzado para el usuario
+local Config = {
+    AutoFarm = true,
+    BrainrotObjetivo = "BrainrotEntity", -- Cambia esto por el nombre exacto en el juego
+    MutacionDeseada = "Shiny"           -- Mutación específica a buscar
+}
+
+-- Función avanzada para buscar y filtrar objetivos según la mutación
+local function buscarConMutacion()
+    for _, objeto in ipairs(Workspace:GetDescendants()) do
+        if objeto.Name == Config.BrainrotObjetivo and objeto:IsA("Model") then
+            if objeto:FindFirstChild("HumanoidRootPart") or objeto.PrimaryPart then
+                -- Validación de mutación por Atributo o por nombre del objeto
+                local tieneMutacion = false
+                if objeto:GetAttribute("Mutation") == Config.MutacionDeseada or objeto.Name:match(Config.MutacionDeseada) then
+                    tieneMutacion = true
+                end
+                
+                -- Si coincide el objetivo y la mutación (o si no se requiere estricta)
+                if tieneMutacion or Config.MutacionDeseada == "" then
+                    return objeto
+                end
+            end
+        end
+    end
+    return nil
+end
+
+-- Bucle principal del Auto-Farm y selección inteligente
+task.spawn(function()
+    print(">>> Script de Auto-Farm y Selección de Mutaciones Iniciado <<<")
+    while task.wait(0.5) do
+        if Config.AutoFarm then
+            local objetivo = buscarConMutacion()
+            
+            if objetivo then
+                print("¡Objetivo detectado!", objetivo.Name, "con la mutación:", Config.MutacionDeseada)
+                
+                -- Enlace con el evento del servidor del juego (RemoteEvent)
+                local remote = ReplicatedStorage:FindFirstChild("RemoteEvent")
+                if remote then
+                    -- Envía la orden para atrapar o interactuar con el objetivo seleccionado
+                    remote:FireServer("AtraparObjetivo", objetivo, Config.MutacionDeseada)
+                end
+            else
+                print("Buscando objetivo:", Config.BrainrotObjetivo, "| Filtro:", Config.MutacionDeseada)
+            end
+        end
+    end
+end)
