@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Panel Simulator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #18294a 0%, #080b14 100%);
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        /* Botón flotante */
+        #floatingButton {
+            position: fixed;
+            left: 25px;
+            top: 120px;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00eaff, #005aff);
+            box-shadow: 0 0 25px #00eaff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            cursor: grab;
+            z-index: 9999;
+            touch-action: none;
+        }
+        #floatingButton:active {
+            cursor: grabbing;
+        }
+        /* Panel */
+        .panel {
+            position: fixed;
+            left: 20px;
+            top: 200px;
+            width: min(390px, 92vw);
+            max-height: 70vh;
+            overflow-y: auto;
+            margin: 5vh auto;
+            padding: 22px;
+            border: 1px solid rgba(0,234,255,.4);
+            border-radius: 22px;
+            background: rgba(7, 12, 25, .94);
+            box-shadow: 0 0 35px rgba(0,200,255,.18), inset 0 0 30px rgba(0,100,255,.05);
+            backdrop-filter: blur(12px);
+            z-index: 9998;
+            display: none;
+        }
+        .logo {
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+            color: #00eaff;
+            text-shadow: 0 0 15px #00eaff;
+        }
+        .subtitle {
+            text-align: center;
+            color: #4895aa;
+            font-size: 12px;
+            margin: 6px 0 20px;
+        }
+        .section {
+            margin-top: 13px;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.06);
+        }
+        .section-title {
+            color: #00eaff;
+            font-weight: bold;
+            margin-bottom: 13px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .option:last-child {
+            border-bottom: none;
+        }
+        .option small {
+            display: block;
+            color: #478a9d;
+            margin-top: 3px;
+        }
+        /* Switch */
+        .switch {
+            position: relative;
+            width: 48px;
+            height: 25px;
+        }
+        .switch input {
+            display: none;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,.15);
+            transition: .3s;
+            border-radius: 25px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #00eaff;
+            box-shadow: 0 0 12px #00eaff;
+        }
+        input:checked + .slider:before {
+            transform: translateX(23px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón flotante -->
+    <div id="floatingButton">⚙️</div>
+
+    <!-- Panel principal -->
+    <div class="panel" id="mainPanel">
+        <div class="logo">COPLE HUB</div>
+        <div class="subtitle">Panel Visual Web Simulator</div>
+
+        <div class="section">
+            <div class="section-title">Funciones Visuales</div>
+            <div class="option">
+                <div>
+                    <span>Simulador AimBot</span>
+                    <small>Efecto visual en pantalla</small>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="option">
+                <div>
+                    <span>HUD Personalizado</span>
+                    <small>Ajuste de interfaz</small>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script para abrir/cerrar y arrastrar el botón flotante
+        const btn = document.getElementById('floatingButton');
+        const panel = document.getElementById('mainPanel');
+        
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        btn.addEventListener('pointerdown', (e) => {
+            isDragging = false;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = btn.offsetLeft;
+            initialY = btn.offsetTop;
+            btn.setPointerCapture(e.pointerId);
+        });
+
+        btn.addEventListener('pointermove', (e) => {
+            if (e.clientX !== startX || e.clientY !== startY) {
+                isDragging = true;
+            }
+            if (isDragging) {
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
+                btn.style.left = (initialX + dx) + 'px';
+                btn.style.top = (initialY + dy) + 'px';
+            }
+        });
+
+        btn.addEventListener('pointerup', (e) => {
+            if (!isDragging) {
+                // Si solo dio un toque, abre o cierra el panel
+                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            }
+            btn.releasePointerCapture(e.pointerId);
+        });
+    </script>
+</body>
+</html>
