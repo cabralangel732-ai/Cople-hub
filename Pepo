@@ -1,0 +1,129 @@
+-- ==========================================
+-- SCRIPT DE CLONACIÓN MEJORADO - CENTRADO Y ESTILO GRIS CLARO
+-- ==========================================
+
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = Players.LocalPlayer
+
+-- Eliminar interfaz anterior si ya estaba abierta
+local existingGui = player.PlayerGui:FindFirstChild("AdvancedClonerGui")
+if existingGui then
+    existingGui:Destroy()
+end
+
+-- Crear la Interfaz Principal
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TitleLabel = Instance.new("TextLabel")
+local StatusLabel = Instance.new("TextLabel")
+local CloneButton = Instance.new("TextButton")
+local ButtonCorner = Instance.new("UICorner")
+
+ScreenGui.Name = "AdvancedClonerGui"
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Contenedor principal centrado en la pantalla (Color blanco tirando a gris)
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(235, 235, 240) -- Blanco grisáceo elegante
+MainFrame.Position = UDim2.new(0.5, -125, 0.5, -90) -- Centrado exacto
+MainFrame.Size = UDim2.new(0, 250, 0, 180)
+MainFrame.Active = true
+MainFrame.Draggable = true -- Se puede mover por toda la pantalla
+
+-- Esquinas redondeadas para el marco
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
+
+-- Título del menú
+TitleLabel.Parent = MainFrame
+TitleLabel.BackgroundColor3 = Color3.fromRGB(210, 210, 215)
+TitleLabel.Size = UDim2.new(1, 0, 0, 40)
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.Text = "CLONADOR DE BRAINROTS"
+TitleLabel.TextColor3 = Color3.fromRGB(40, 40, 45)
+TitleLabel.TextSize = 13
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 12)
+TitleCorner.Parent = TitleLabel
+
+-- Texto de estado / instrucciones
+StatusLabel.Parent = MainFrame
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Position = UDim2.new(0, 10, 0, 50)
+StatusLabel.Size = UDim2.new(1, -20, 0, 50)
+StatusLabel.Font = Enum.Font.Gotham
+StatusLabel.Text = "Acércate al objeto que quieras clonar y presiona el botón."
+StatusLabel.TextColor3 = Color3.fromRGB(80, 80, 90)
+StatusLabel.TextSize = 12
+StatusLabel.TextWrapped = true
+
+-- Botón principal de acción
+CloneButton.Parent = MainFrame
+CloneButton.BackgroundColor3 = Color3.fromRGB(70, 130, 240) -- Azul destacado
+CloneButton.Position = UDim2.new(0.15, 0, 0.7, 0)
+CloneButton.Size = UDim2.new(0, 175, 0, 40)
+CloneButton.Font = Enum.Font.GothamBold
+CloneButton.Text = "CLONAR AHORA"
+CloneButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloneButton.TextSize = 14
+
+ButtonCorner.CornerRadius = UDim.new(0, 8)
+ButtonCorner.Parent = CloneButton
+
+-- Lógica avanzada de clonación mejorada
+CloneButton.MouseButton1Click:Connect(function()
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then 
+        StatusLabel.Text = "¡Error: Personaje no encontrado!"
+        return 
+    end
+    
+    local hrp = char.HumanoidRootPart
+    local targetObject = nil
+    local minDistance = 25 -- Rango de búsqueda ampliado
+
+    -- Buscamos en el Workspace objetos interactivos o modelos cercanos
+    for _, obj in ipairs(Workspace:GetChildren()) do
+        if obj ~= char and (obj:IsA("Model") or obj:IsA("BasePart")) then
+            local primaryPart = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")) or obj
+            if primaryPart and primaryPart:IsA("BasePart") then
+                local distance = (hrp.Position - primaryPart.Position).Magnitude
+                if distance < minDistance then
+                    minDistance = distance
+                    targetObject = obj
+                end
+            end
+        end
+    end
+
+    if targetObject then
+        local success, err = pcall(function()
+            local clone = targetObject:Clone()
+            if clone:IsA("Model") then
+                if not clone.PrimaryPart then
+                    local part = clone:FindFirstChildWhichIsA("BasePart")
+                    if part then clone.PrimaryPart = part end
+                end
+                if clone.PrimaryPart then
+                    clone:SetPrimaryPartCFrame(hrp.CFrame + (hrp.CFrame.LookVector * 6))
+                end
+            elseif clone:IsA("BasePart") then
+                clone.Position = hrp.Position + (hrp.CFrame.LookVector * 6)
+            end
+            clone.Parent = Workspace
+        end)
+        
+        if success then
+            StatusLabel.Text = "¡Clonado con éxito: " .. targetObject.Name .. "!"
+        else
+            StatusLabel.Text = "El servidor bloqueó la clonación."
+        end
+    else
+        StatusLabel.Text = "No hay ningún objeto cerca. Acércate más."
+    end
+end)
