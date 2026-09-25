@@ -1,0 +1,93 @@
+-- Cargamos la librería de interfaz
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Cople Hub - Steal an Egg", "DarkTheme")
+
+-- ==========================================
+-- PESTAÑA: AUTO FARM / HUEVOS
+-- ==========================================
+local MainTab = Window:NewTab("Principal")
+local MainSec = MainTab:NewSection("Automatización")
+
+MainSec:NewToggle("Auto Teleport a Huevos", "Se mueve hacia los huevos del mapa", function(state)
+    getgenv().StealEggActive = state
+    
+    task.spawn(function()
+        while getgenv().StealEggActive do
+            pcall(function()
+                local player = game:GetService("Players").LocalPlayer
+                local character = player.Character or player.CharacterAdded:Wait()
+                local rootPart = character:WaitForChild("HumanoidRootPart")
+                
+                -- En Steal an Egg las carpetas suelen llamarse 'Eggs' o contener piezas físicas
+                local eggsFolder = workspace:FindFirstChild("Eggs")
+                if eggsFolder then
+                    for _, egg in ipairs(eggsFolder:GetChildren()) do
+                        if not getgenv().StealEggActive then break end
+                        if egg:IsA("BasePart") then
+                            rootPart.CFrame = egg.CFrame + Vector3.new(0, 3, 0)
+                            task.wait(0.8) -- Tiempo para que registre la recogida
+                        end
+                    end
+                end
+            end)
+            task.wait(1)
+        end
+    end)
+end)
+
+-- ==========================================
+-- PESTAÑA: VISUALES / ESP DE HUEVOS
+-- ==========================================
+local VisualTab = Window:NewTab("Visuales")
+local VisualSec = VisualTab:NewSection("Marcar Huevos")
+
+VisualSec:NewToggle("Ver Huevos (ESP)", "Muestra los huevos a través de las paredes", function(state)
+    getgenv().EggEsp = state
+    
+    pcall(function()
+        local eggsFolder = workspace:FindFirstChild("Eggs")
+        if not eggsFolder then return end
+        
+        for _, egg in ipairs(eggsFolder:GetChildren()) do
+            if egg:IsA("BasePart") then
+                if state then
+                    if not egg:FindFirstChild("EspBox") then
+                        local bill = Instance.new("BillboardGui")
+                        bill.Name = "EspBox"
+                        bill.Size = UDim2.new(0, 100, 0, 40)
+                        bill.AlwaysOnTop = true
+                        bill.StudsOffset = Vector3.new(0, 2, 0)
+                        
+                        local txt = Instance.new("TextLabel", bill)
+                        txt.Size = UDim2.new(1, 0, 1, 0)
+                        txt.BackgroundTransparency = 1
+                        txt.Text = "Huevo 🥚"
+                        txt.TextColor3 = Color3.fromRGB(0, 255, 128)
+                        txt.TextScaled = true
+                        
+                        bill.Parent = egg
+                    end
+                else
+                    if egg:FindFirstChild("EspBox") then
+                        egg.EspBox:Destroy()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+-- ==========================================
+-- PESTAÑA: TELEPORTS
+-- ==========================================
+local TeleportTab = Window:NewTab("Teleports")
+local TeleportSec = TeleportTab:NewSection("Zonas Seguras")
+
+TeleportSec:NewButton("Volver a la Base", "Te regresa rápido a tu zona", function()
+    pcall(function()
+        local player = game:GetService("Players").LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        -- Ajusta las coordenadas de tu base aquí si lo necesitas
+        character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
+    end)
+end)
