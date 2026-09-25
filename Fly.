@@ -1,0 +1,166 @@
+-- ==========================================
+-- CUSTOM HUB UNIVERSAL - AZUL Y AMARILLO (FLY FIX)
+-- ==========================================
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+pcall(function()
+    if CoreGui:FindFirstChild("CustomBlueYellowHub") then
+        CoreGui.CustomBlueYellowHub:Destroy()
+    end
+end)
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TopBar = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local ToggleUIBtn = Instance.new("TextButton")
+local UICorner_3 = Instance.new("UICorner")
+local ContentFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+
+local FlyBtn = Instance.new("TextButton")
+local UICorner_4 = Instance.new("UICorner")
+
+ScreenGui.Name = "CustomBlueYellowHub"
+ScreenGui.Parent = CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 25, 50)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
+MainFrame.Size = UDim2.new(0, 300, 0, 250)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+TopBar.Name = "TopBar"
+TopBar.Parent = MainFrame
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 35, 70)
+TopBar.Size = UDim2.new(0, 300, 0, 40)
+
+UICorner_2.CornerRadius = UDim.new(0, 10)
+UICorner_2.Parent = TopBar
+
+Title.Name = "Title"
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.Size = UDim2.new(0, 200, 0, 40)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "UNIVERSAL HUB"
+Title.TextColor3 = Color3.fromRGB(255, 220, 0)
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+ToggleUIBtn.Name = "ToggleUIBtn"
+ToggleUIBtn.Parent = TopBar
+ToggleUIBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+ToggleUIBtn.Position = UDim2.new(0, 255, 0, 8)
+ToggleUIBtn.Size = UDim2.new(0, 35, 0, 24)
+ToggleUIBtn.Font = Enum.Font.GothamBold
+ToggleUIBtn.Text = "-"
+ToggleUIBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+ToggleUIBtn.TextSize = 18
+
+UICorner_3.CornerRadius = UDim.new(0, 6)
+UICorner_3.Parent = ToggleUIBtn
+
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Parent = MainFrame
+ContentFrame.Active = true
+ContentFrame.BackgroundColor3 = Color3.fromRGB(25, 40, 75)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Position = UDim2.new(0, 10, 0, 50)
+ContentFrame.Size = UDim2.new(0, 280, 0, 190)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 200)
+ContentFrame.ScrollBarThickness = 6
+
+UIListLayout.Parent = ContentFrame
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 10)
+
+FlyBtn.Name = "FlyBtn"
+FlyBtn.Parent = ContentFrame
+FlyBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+FlyBtn.Size = UDim2.new(0, 260, 0, 50)
+FlyBtn.Font = Enum.Font.GothamBold
+FlyBtn.Text = "FLY: APAGADO"
+FlyBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+FlyBtn.TextSize = 16
+
+UICorner_4.CornerRadius = UDim.new(0, 8)
+UICorner_4.Parent = FlyBtn
+
+local minimized = false
+ToggleUIBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        ContentFrame.Visible = false
+        MainFrame.Size = UDim2.new(0, 300, 0, 40)
+        ToggleUIBtn.Text = "+"
+    else
+        ContentFrame.Visible = true
+        MainFrame.Size = UDim2.new(0, 300, 0, 250)
+        ToggleUIBtn.Text = "-"
+    end
+end)
+
+-- Lógica de Vuelo Real con BodyVelocity y BodyGyro
+getgenv().FlyActive = false
+local bv, bg
+
+FlyBtn.MouseButton1Click:Connect(function()
+    getgenv().FlyActive = not getgenv().FlyActive
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+    if getgenv().FlyActive then
+        FlyBtn.Text = "FLY: ENCENDIDO"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+        
+        if humanoid then humanoid.PlatformStand = true end
+
+        bv = Instance.new("BodyVelocity")
+        bv.Name = "HubFlyVel"
+        bv.Parent = hrp
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.new(0, 0, 0)
+
+        bg = Instance.new("BodyGyro")
+        bg.Name = "HubFlyGyro"
+        bg.Parent = hrp
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.CFrame = hrp.CFrame
+    else
+        FlyBtn.Text = "FLY: APAGADO"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+        
+        if hrp:FindFirstChild("HubFlyVel") then hrp.HubFlyVel:Destroy() end
+        if hrp:FindFirstChild("HubFlyGyro") then hrp.HubFlyGyro:Destroy() end
+        if humanoid then humanoid.PlatformStand = false end
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if getgenv().FlyActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        local cam = workspace.CurrentCamera
+        if hrp:FindFirstChild("HubFlyVel") and hrp:FindFirstChild("HubFlyGyro") then
+            -- Vuelas exactamente hacia donde apuntas con la cámara y te mantienes suspendido
+            hrp.HubFlyVel.Velocity = cam.CFrame.LookVector * 60
+            hrp.HubFlyGyro.CFrame = cam.CFrame
+        end
+    end
+end)
