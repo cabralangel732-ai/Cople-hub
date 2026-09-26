@@ -1,0 +1,56 @@
+-- [[ 🔥 EL CHILITO 🔥 - Script Personalizado ]]
+-- Basado en la lógica de automatización y granja
+
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+
+local localPlayer = Players.LocalPlayer
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Configuración inicial de EL CHILITO
+getgenv().ElChilitoConfig = {
+    AutoFarmDrones = true,
+    VelocidadeTeleport = 50,
+    DistanciaMinima = 3
+}
+
+-- Notificación de inicio en la consola / pantalla
+print("-----------------------------------------")
+print("🔥 ¡EL CHILITO 🔥 se ha inyectado con éxito!")
+print("-----------------------------------------")
+
+-- Función para buscar elementos objetivo en el mapa
+local function encontrarObjetivo()
+    local objetivoCercano = nil
+    local distanciaMinima = math.huge
+
+    -- Cambia "Drone" por el nombre exacto del objeto que quieras farmear en el juego
+    for _, objeto in ipairs(Workspace:GetChildren()) do
+        if objeto.Name == "Drone" and objeto:FindFirstChild("Part") then
+            local distancia = (humanoidRootPart.Position - objeto.Part.Position).Magnitude
+            if distancia < distanciaMinima then
+                distanciaMinima = distancia
+                objetivoCercano = objeto
+            end
+        end
+    end
+
+    return objetivoCercano
+end
+
+-- Bucle principal de automatización de EL CHILITO
+task.spawn(function()
+    while task.wait(0.5) do
+        if getgenv().ElChilitoConfig.AutoFarmDrones then
+            local objetivo = encontrarObjetivo()
+            if objetivo and objetivo:FindFirstChild("Part") then
+                pcall(function()
+                    -- Teletransporte directo hacia el objetivo
+                    humanoidRootPart.CFrame = objetivo.Part.CFrame + Vector3.new(0, 3, 0)
+                end)
+            end
+        end
+    end
+end)
