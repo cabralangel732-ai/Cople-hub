@@ -1,0 +1,430 @@
+-- ==========================================
+-- CUSTOM HUB UNIVERSAL PRO - AZUL Y AMARILLO (MESSI EDITION)
+-- ==========================================
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+
+-- Eliminar ejecuciones anteriores
+pcall(function()
+    if CoreGui:FindFirstChild("CustomBlueYellowHub") then
+        CoreGui.CustomBlueYellowHub:Destroy()
+    end
+end)
+
+-- ID de imagen por defecto para el Banner
+local IMAGE_ID = "rbxassetid://13215273763" -- ID de Messi (puedes cambiarla)
+
+-- Variables globales
+getgenv().FlyActive = false
+getgenv().NoclipActive = false
+getgenv().InfJumpActive = false
+getgenv().FlySpeed = 50
+getgenv().WalkSpeedVal = 16
+
+local bv, bg
+local currentVelocity = Vector3.new(0, 0, 0)
+
+-- Creación de la GUI Principal
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TopBar = Instance.new("Frame")
+local UICorner_Top = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local ToggleUIBtn = Instance.new("TextButton")
+local UICorner_Toggle = Instance.new("UICorner")
+local CloseUIBtn = Instance.new("TextButton")
+local UICorner_Close = Instance.new("UICorner")
+
+local ContentFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+
+ScreenGui.Name = "CustomBlueYellowHub"
+ScreenGui.Parent = CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 25, 50)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -190)
+MainFrame.Size = UDim2.new(0, 300, 0, 380)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
+
+TopBar.Name = "TopBar"
+TopBar.Parent = MainFrame
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 35, 70)
+TopBar.Size = UDim2.new(0, 300, 0, 40)
+
+UICorner_Top.CornerRadius = UDim.new(0, 12)
+UICorner_Top.Parent = TopBar
+
+Title.Name = "Title"
+Title.Parent = TopBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 12, 0, 0)
+Title.Size = UDim2.new(0, 200, 0, 40)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "MESSI HUB PRO ⚽"
+Title.TextColor3 = Color3.fromRGB(255, 220, 0)
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Botón Minimizar
+ToggleUIBtn.Name = "ToggleUIBtn"
+ToggleUIBtn.Parent = TopBar
+ToggleUIBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+ToggleUIBtn.Position = UDim2.new(0, 220, 0, 8)
+ToggleUIBtn.Size = UDim2.new(0, 30, 0, 24)
+ToggleUIBtn.Font = Enum.Font.GothamBold
+ToggleUIBtn.Text = "-"
+ToggleUIBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
+ToggleUIBtn.TextSize = 18
+UICorner_Toggle.CornerRadius = UDim.new(0, 6)
+UICorner_Toggle.Parent = ToggleUIBtn
+
+-- Botón Cerrar
+CloseUIBtn.Name = "CloseUIBtn"
+CloseUIBtn.Parent = TopBar
+CloseUIBtn.BackgroundColor3 = Color3.fromRGB(230, 50, 50)
+CloseUIBtn.Position = UDim2.new(0, 258, 0, 8)
+CloseUIBtn.Size = UDim2.new(0, 30, 0, 24)
+CloseUIBtn.Font = Enum.Font.GothamBold
+CloseUIBtn.Text = "X"
+CloseUIBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseUIBtn.TextSize = 14
+UICorner_Close.CornerRadius = UDim.new(0, 6)
+UICorner_Close.Parent = CloseUIBtn
+
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Parent = MainFrame
+ContentFrame.Active = true
+ContentFrame.BackgroundColor3 = Color3.fromRGB(25, 40, 75)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Position = UDim2.new(0, 10, 0, 48)
+ContentFrame.Size = UDim2.new(0, 280, 0, 320)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 450)
+ContentFrame.ScrollBarThickness = 6
+
+UIListLayout.Parent = ContentFrame
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 10)
+
+-- Banner Messi
+local ImageBanner = Instance.new("ImageLabel")
+local UICorner_Banner = Instance.new("UICorner")
+ImageBanner.Name = "ImageBanner"
+ImageBanner.Parent = ContentFrame
+ImageBanner.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+ImageBanner.Size = UDim2.new(0, 260, 0, 80)
+ImageBanner.Image = IMAGE_ID
+ImageBanner.ScaleType = Enum.ScaleType.Crop
+UICorner_Banner.CornerRadius = UDim.new(0, 8)
+UICorner_Banner.Parent = ImageBanner
+
+-- Función para crear botones estándar
+local function createButton(name, text)
+    local btn = Instance.new("TextButton")
+    local corner = Instance.new("UICorner")
+    btn.Name = name
+    btn.Parent = ContentFrame
+    btn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+    btn.Size = UDim2.new(0, 260, 0, 40)
+    btn.Font = Enum.Font.GothamBold
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(15, 25, 50)
+    btn.TextSize = 14
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = btn
+    return btn
+end
+
+-- Botón Fly
+local FlyBtn = createButton("FlyBtn", "FLY: APAGADO")
+
+-- Control de Velocidad de Vuelo (Horizontal Layout)
+local SpeedLabel = Instance.new("TextLabel")
+SpeedLabel.Parent = ContentFrame
+SpeedLabel.BackgroundTransparency = 1
+SpeedLabel.Size = UDim2.new(0, 260, 0, 18)
+SpeedLabel.Font = Enum.Font.GothamBold
+SpeedLabel.Text = "VELOCIDAD VUELO: 50 (MAX: 150)"
+SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedLabel.TextSize = 12
+
+local SpeedFrame = Instance.new("Frame")
+SpeedFrame.Parent = ContentFrame
+SpeedFrame.BackgroundTransparency = 1
+SpeedFrame.Size = UDim2.new(0, 260, 0, 35)
+
+local SpeedHorizontalList = Instance.new("UIListLayout")
+SpeedHorizontalList.Parent = SpeedFrame
+SpeedHorizontalList.FillDirection = Enum.FillDirection.Horizontal
+SpeedHorizontalList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+SpeedHorizontalList.Padding = UDim.new(0, 10)
+
+local SpeedDownBtn = Instance.new("TextButton")
+SpeedDownBtn.Parent = SpeedFrame
+SpeedDownBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+SpeedDownBtn.Size = UDim2.new(0, 125, 0, 35)
+SpeedDownBtn.Font = Enum.Font.GothamBold
+SpeedDownBtn.Text = "(- ) BAJAR"
+SpeedDownBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
+SpeedDownBtn.TextSize = 13
+local UICorner_S1 = Instance.new("UICorner")
+UICorner_S1.CornerRadius = UDim.new(0, 6)
+UICorner_S1.Parent = SpeedDownBtn
+
+local SpeedUpBtn = Instance.new("TextButton")
+SpeedUpBtn.Parent = SpeedFrame
+SpeedUpBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+SpeedUpBtn.Size = UDim2.new(0, 125, 0, 35)
+SpeedUpBtn.Font = Enum.Font.GothamBold
+SpeedUpBtn.Text = "(+ ) SUBIR"
+SpeedUpBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
+SpeedUpBtn.TextSize = 13
+local UICorner_S2 = Instance.new("UICorner")
+UICorner_S2.CornerRadius = UDim.new(0, 6)
+UICorner_S2.Parent = SpeedUpBtn
+
+-- Botón Noclip
+local NoclipBtn = createButton("NoclipBtn", "NOCLIP (PAREDES): APAGADO")
+
+-- Botón Salto Infinito
+local InfJumpBtn = createButton("InfJumpBtn", "SALTO INFINITO: APAGADO")
+
+-- Control de WalkSpeed (Velocidad Normal)
+local WalkLabel = Instance.new("TextLabel")
+WalkLabel.Parent = ContentFrame
+WalkLabel.BackgroundTransparency = 1
+WalkLabel.Size = UDim2.new(0, 260, 0, 18)
+WalkLabel.Font = Enum.Font.GothamBold
+WalkLabel.Text = "VELOCIDAD CAMINAR: 16"
+WalkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+WalkLabel.TextSize = 12
+
+local WalkFrame = Instance.new("Frame")
+WalkFrame.Parent = ContentFrame
+WalkFrame.BackgroundTransparency = 1
+WalkFrame.Size = UDim2.new(0, 260, 0, 35)
+
+local WalkHorizontalList = Instance.new("UIListLayout")
+WalkHorizontalList.Parent = WalkFrame
+WalkHorizontalList.FillDirection = Enum.FillDirection.Horizontal
+WalkHorizontalList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+WalkHorizontalList.Padding = UDim.new(0, 10)
+
+local WalkDownBtn = Instance.new("TextButton")
+WalkDownBtn.Parent = WalkFrame
+WalkDownBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+WalkDownBtn.Size = UDim2.new(0, 125, 0, 35)
+WalkDownBtn.Font = Enum.Font.GothamBold
+WalkDownBtn.Text = "(- 10) CAMINAR"
+WalkDownBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
+WalkDownBtn.TextSize = 12
+local UICorner_W1 = Instance.new("UICorner")
+UICorner_W1.CornerRadius = UDim.new(0, 6)
+UICorner_W1.Parent = WalkDownBtn
+
+local WalkUpBtn = Instance.new("TextButton")
+WalkUpBtn.Parent = WalkFrame
+WalkUpBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
+WalkUpBtn.Size = UDim2.new(0, 125, 0, 35)
+WalkUpBtn.Font = Enum.Font.GothamBold
+WalkUpBtn.Text = "(+ 10) CAMINAR"
+WalkUpBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
+WalkUpBtn.TextSize = 12
+local UICorner_W2 = Instance.new("UICorner")
+UICorner_W2.CornerRadius = UDim.new(0, 6)
+UICorner_W2.Parent = WalkUpBtn
+
+-- Botón Click TP Tool
+local TPToolBtn = createButton("TPToolBtn", "OBTENER CLICK TP TOOL")
+
+-- ==========================================
+-- LOGICA Y EVENTOS
+-- ==========================================
+
+-- Minimizar y Cerrar
+local minimized = false
+ToggleUIBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        ContentFrame.Visible = false
+        MainFrame.Size = UDim2.new(0, 300, 0, 40)
+        ToggleUIBtn.Text = "+"
+    else
+        ContentFrame.Visible = true
+        MainFrame.Size = UDim2.new(0, 300, 0, 380)
+        ToggleUIBtn.Text = "-"
+    end
+end)
+
+CloseUIBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Lógica Fly Speed
+SpeedUpBtn.MouseButton1Click:Connect(function()
+    if getgenv().FlySpeed < 150 then
+        getgenv().FlySpeed = getgenv().FlySpeed + 10
+        SpeedLabel.Text = "VELOCIDAD VUELO: " .. getgenv().FlySpeed .. " (MAX: 150)"
+    end
+end)
+
+SpeedDownBtn.MouseButton1Click:Connect(function()
+    if getgenv().FlySpeed > 10 then
+        getgenv().FlySpeed = getgenv().FlySpeed - 10
+        SpeedLabel.Text = "VELOCIDAD VUELO: " .. getgenv().FlySpeed .. " (MAX: 150)"
+    end
+end)
+
+-- Lógica Fly Toggle
+FlyBtn.MouseButton1Click:Connect(function()
+    getgenv().FlyActive = not getgenv().FlyActive
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+    if getgenv().FlyActive then
+        FlyBtn.Text = "FLY: ENCENDIDO"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+        
+        if humanoid then humanoid.PlatformStand = true end
+
+        bv = Instance.new("BodyVelocity")
+        bv.Name = "HubFlyVel"
+        bv.Parent = hrp
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.new(0, 0, 0)
+
+        bg = Instance.new("BodyGyro")
+        bg.Name = "HubFlyGyro"
+        bg.Parent = hrp
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.CFrame = hrp.CFrame
+    else
+        FlyBtn.Text = "FLY: APAGADO"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+        
+        if hrp:FindFirstChild("HubFlyVel") then hrp.HubFlyVel:Destroy() end
+        if hrp:FindFirstChild("HubFlyGyro") then hrp.HubFlyGyro:Destroy() end
+        if humanoid then humanoid.PlatformStand = false end
+    end
+end)
+
+-- Lógica Noclip
+NoclipBtn.MouseButton1Click:Connect(function()
+    getgenv().NoclipActive = not getgenv().NoclipActive
+    if getgenv().NoclipActive then
+        NoclipBtn.Text = "NOCLIP (PAREDES): ENCENDIDO"
+        NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+    else
+        NoclipBtn.Text = "NOCLIP (PAREDES): APAGADO"
+        NoclipBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+    end
+end)
+
+-- Lógica Inf Jump
+InfJumpBtn.MouseButton1Click:Connect(function()
+    getgenv().InfJumpActive = not getgenv().InfJumpActive
+    if getgenv().InfJumpActive then
+        InfJumpBtn.Text = "SALTO INFINITO: ENCENDIDO"
+        InfJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+    else
+        InfJumpBtn.Text = "SALTO INFINITO: APAGADO"
+        InfJumpBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if getgenv().InfJumpActive and player.Character then
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end)
+
+-- Lógica WalkSpeed
+WalkUpBtn.MouseButton1Click:Connect(function()
+    getgenv().WalkSpeedVal = getgenv().WalkSpeedVal + 10
+    WalkLabel.Text = "VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
+    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+        player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = getgenv().WalkSpeedVal
+    end
+end)
+
+WalkDownBtn.MouseButton1Click:Connect(function()
+    if getgenv().WalkSpeedVal > 16 then
+        getgenv().WalkSpeedVal = getgenv().WalkSpeedVal - 10
+        WalkLabel.Text = "VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = getgenv().WalkSpeedVal
+        end
+    end
+end)
+
+-- Lógica Click TP Tool
+TPToolBtn.MouseButton1Click:Connect(function()
+    local tool = Instance.new("Tool")
+    tool.Name = "Click TP"
+    tool.RequiresHandle = false
+    tool.Parent = player.Backpack
+
+    tool.Activated:Connect(function()
+        local mouse = player:GetMouse()
+        if mouse and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0))
+        end
+    end)
+end)
+
+-- Loops de físicas (Noclip y Vuelo)
+RunService.Stepped:Connect(function()
+    if getgenv().NoclipActive and player.Character then
+        for _, part in ipairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+RunService.RenderStepped:Connect(function(dt)
+    if getgenv().FlyActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        local cam = workspace.CurrentCamera
+        
+        if hrp:FindFirstChild("HubFlyVel") and hrp:FindFirstChild("HubFlyGyro") then
+            bg.CFrame = cam.CFrame
+            
+            if humanoid then
+                local moveDir = humanoid.MoveDirection
+                local targetVelocity = Vector3.new(0, 0, 0)
+                
+                if moveDir.Magnitude > 0 then
+                    targetVelocity = cam.CFrame:VectorToWorldSpace(Vector3.new(moveDir.X, 0, moveDir.Z)) * getgenv().FlySpeed
+                end
+                
+                currentVelocity = currentVelocity:Lerp(targetVelocity, math.clamp(dt * 12, 0, 1))
+                bv.Velocity = currentVelocity
+            end
+        end
+    end
+    
+    -- Mantener WalkSpeed activo
+    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+        player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = getgenv().WalkSpeedVal
+    end
+end)
