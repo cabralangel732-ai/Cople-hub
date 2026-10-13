@@ -1,6 +1,5 @@
-
 -- ==========================================
--- CUSTOM HUB UNIVERSAL PRO - AZUL Y AMARILLO (MESSI EDITION)
+-- MESSI HUB VIP / GAMING EDITION (CYBERPUNK)
 -- ==========================================
 
 local CoreGui = game:GetService("CoreGui")
@@ -11,15 +10,13 @@ local player = Players.LocalPlayer
 
 -- Eliminar ejecuciones anteriores
 pcall(function()
-    if CoreGui:FindFirstChild("CustomBlueYellowHub") then
-        CoreGui.CustomBlueYellowHub:Destroy()
+    if CoreGui:FindFirstChild("MessiGamingHub") then
+        CoreGui.MessiGamingHub:Destroy()
     end
 end)
 
--- ID de imagen por defecto para el Banner
 local IMAGE_ID = "rbxassetid://13215273763"
 
--- Variables globales
 getgenv().FlyActive = false
 getgenv().NoclipActive = false
 getgenv().InfJumpActive = false
@@ -29,243 +26,248 @@ getgenv().WalkSpeedVal = 16
 local bv, bg
 local currentVelocity = Vector3.new(0, 0, 0)
 
--- Creación de la GUI Principal
+-- UI Root
 local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
-local TopBar = Instance.new("Frame")
-local UICorner_Top = Instance.new("UICorner")
-local Title = Instance.new("TextLabel")
-local ToggleUIBtn = Instance.new("TextButton")
-local UICorner_Toggle = Instance.new("UICorner")
-local CloseUIBtn = Instance.new("TextButton")
-local UICorner_Close = Instance.new("UICorner")
-
-local ContentFrame = Instance.new("ScrollingFrame")
-local UIListLayout = Instance.new("UIListLayout")
-
-ScreenGui.Name = "CustomBlueYellowHub"
+ScreenGui.Name = "MessiGamingHub"
 ScreenGui.Parent = CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
+-- Main Frame (Contenedor Principal)
+local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 25, 50)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -190)
-MainFrame.Size = UDim2.new(0, 300, 0, 380)
+MainFrame.BackgroundColor3 = Color3.fromRGB(11, 14, 20)
+MainFrame.Position = UDim2.new(0.5, -160, 0.5, -200)
+MainFrame.Size = UDim2.new(0, 320, 0, 400)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
-UICorner.CornerRadius = UDim.new(0, 12)
-UICorner.Parent = MainFrame
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = MainFrame
 
+-- Borde Neón Azul
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Parent = MainFrame
+MainStroke.Color = Color3.fromRGB(0, 210, 255)
+MainStroke.Thickness = 1.8
+MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- Barra Superior
+local TopBar = Instance.new("Frame")
 TopBar.Name = "TopBar"
 TopBar.Parent = MainFrame
-TopBar.BackgroundColor3 = Color3.fromRGB(20, 35, 70)
-TopBar.Size = UDim2.new(0, 300, 0, 40)
+TopBar.BackgroundColor3 = Color3.fromRGB(18, 24, 38)
+TopBar.Size = UDim2.new(1, 0, 0, 42)
 
-UICorner_Top.CornerRadius = UDim.new(0, 12)
-UICorner_Top.Parent = TopBar
+local TopCorner = Instance.new("UICorner")
+TopCorner.CornerRadius = UDim.new(0, 10)
+TopCorner.Parent = TopBar
 
-Title.Name = "Title"
+local Title = Instance.new("TextLabel")
 Title.Parent = TopBar
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0, 12, 0, 0)
-Title.Size = UDim2.new(0, 200, 0, 40)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "MESSI HUB PRO ⚽"
-Title.TextColor3 = Color3.fromRGB(255, 220, 0)
-Title.TextSize = 16
+Title.Size = UDim2.new(0, 200, 0, 42)
+Title.Font = Enum.Font.GothamBlack
+Title.Text = "⚡ MESSI HUB <font color=\"rgb(0, 255, 200)\">PRO</font>"
+Title.RichText = true
+Title.TextColor3 = Color3.fromRGB(255, 215, 0)
+Title.TextSize = 15
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Botón Minimizar
-ToggleUIBtn.Name = "ToggleUIBtn"
+-- Botón Minimizar (-)
+local ToggleUIBtn = Instance.new("TextButton")
 ToggleUIBtn.Parent = TopBar
-ToggleUIBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
-ToggleUIBtn.Position = UDim2.new(0, 220, 0, 8)
-ToggleUIBtn.Size = UDim2.new(0, 30, 0, 24)
+ToggleUIBtn.BackgroundColor3 = Color3.fromRGB(30, 40, 60)
+ToggleUIBtn.Position = UDim2.new(1, -70, 0, 8)
+ToggleUIBtn.Size = UDim2.new(0, 26, 0, 26)
 ToggleUIBtn.Font = Enum.Font.GothamBold
-ToggleUIBtn.Text = "-"
-ToggleUIBtn.TextColor3 = Color3.fromRGB(15, 25, 50)
-ToggleUIBtn.TextSize = 18
-UICorner_Toggle.CornerRadius = UDim.new(0, 6)
-UICorner_Toggle.Parent = ToggleUIBtn
+ToggleUIBtn.Text = "—"
+ToggleUIBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleUIBtn.TextSize = 12
+local UICorner_T = Instance.new("UICorner")
+UICorner_T.CornerRadius = UDim.new(0, 6)
+UICorner_T.Parent = ToggleUIBtn
 
--- Botón Cerrar
-CloseUIBtn.Name = "CloseUIBtn"
+-- Botón Cerrar (X)
+local CloseUIBtn = Instance.new("TextButton")
 CloseUIBtn.Parent = TopBar
-CloseUIBtn.BackgroundColor3 = Color3.fromRGB(230, 50, 50)
-CloseUIBtn.Position = UDim2.new(0, 258, 0, 8)
-CloseUIBtn.Size = UDim2.new(0, 30, 0, 24)
+CloseUIBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 60)
+CloseUIBtn.Position = UDim2.new(1, -36, 0, 8)
+CloseUIBtn.Size = UDim2.new(0, 26, 0, 26)
 CloseUIBtn.Font = Enum.Font.GothamBold
-CloseUIBtn.Text = "X"
+CloseUIBtn.Text = "✕"
 CloseUIBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseUIBtn.TextSize = 14
-UICorner_Close.CornerRadius = UDim.new(0, 6)
-UICorner_Close.Parent = CloseUIBtn
+CloseUIBtn.TextSize = 12
+local UICorner_C = Instance.new("UICorner")
+UICorner_C.CornerRadius = UDim.new(0, 6)
+UICorner_C.Parent = CloseUIBtn
 
-ContentFrame.Name = "ContentFrame"
+-- Área de Contenido
+local ContentFrame = Instance.new("ScrollingFrame")
 ContentFrame.Parent = MainFrame
-ContentFrame.Active = true
-ContentFrame.BackgroundColor3 = Color3.fromRGB(25, 40, 75)
-ContentFrame.BorderSizePixel = 0
-ContentFrame.Position = UDim2.new(0, 10, 0, 48)
-ContentFrame.Size = UDim2.new(0, 280, 0, 320)
-ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 450)
-ContentFrame.ScrollBarThickness = 6
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Position = UDim2.new(0, 10, 0, 50)
+ContentFrame.Size = UDim2.new(1, -20, 1, -60)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 480)
+ContentFrame.ScrollBarThickness = 4
+ContentFrame.ScrollBarImageColor3 = Color3.fromRGB(0, 210, 255)
 
-UIListLayout.Parent = ContentFrame
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 10)
+local UIList = Instance.new("UIListLayout")
+UIList.Parent = ContentFrame
+UIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIList.SortOrder = Enum.SortOrder.LayoutOrder
+UIList.Padding = UDim.new(0, 10)
 
--- Banner Messi
-local ImageBanner = Instance.new("ImageLabel")
-local UICorner_Banner = Instance.new("UICorner")
-ImageBanner.Name = "ImageBanner"
-ImageBanner.Parent = ContentFrame
-ImageBanner.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
-ImageBanner.Size = UDim2.new(0, 260, 0, 80)
-ImageBanner.Image = IMAGE_ID
-ImageBanner.ScaleType = Enum.ScaleType.Crop
-UICorner_Banner.CornerRadius = UDim.new(0, 8)
-UICorner_Banner.Parent = ImageBanner
+-- Banner Messi Gaming
+local Banner = Instance.new("ImageLabel")
+Banner.Parent = ContentFrame
+Banner.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+Banner.Size = UDim2.new(1, 0, 0, 85)
+Banner.Image = IMAGE_ID
+Banner.ScaleType = Enum.ScaleType.Crop
+local BannerCorner = Instance.new("UICorner")
+BannerCorner.CornerRadius = UDim.new(0, 8)
+BannerCorner.Parent = Banner
 
--- Función para crear botones estándar
+local BannerStroke = Instance.new("UIStroke")
+BannerStroke.Parent = Banner
+BannerStroke.Color = Color3.fromRGB(255, 215, 0)
+BannerStroke.Thickness = 1
+
+-- Creador de Botones Gaming
 local function createButton(name, text)
     local btn = Instance.new("TextButton")
-    local corner = Instance.new("UICorner")
     btn.Name = name
     btn.Parent = ContentFrame
-    btn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
-    btn.Size = UDim2.new(0, 260, 0, 40)
+    btn.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    btn.Size = UDim2.new(1, 0, 0, 38)
     btn.Font = Enum.Font.GothamBold
     btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(15, 25, 50)
-    btn.TextSize = 14
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 13
+    
+    local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = btn
-    return btn
+    
+    local stroke = Instance.new("UIStroke")
+    stroke.Name = "BtnStroke"
+    stroke.Parent = btn
+    stroke.Color = Color3.fromRGB(45, 60, 90)
+    stroke.Thickness = 1
+    
+    return btn, stroke
 end
 
 -- Botón Fly
-local FlyBtn = createButton("FlyBtn", "FLY: APAGADO")
+local FlyBtn, FlyStroke = createButton("FlyBtn", "✈️ FLY: APAGADO")
 
--- Control de Velocidad de Vuelo (Horizontal Layout)
+-- Control Velocidad Fly
 local SpeedLabel = Instance.new("TextLabel")
 SpeedLabel.Parent = ContentFrame
 SpeedLabel.BackgroundTransparency = 1
-SpeedLabel.Size = UDim2.new(0, 260, 0, 18)
+SpeedLabel.Size = UDim2.new(1, 0, 0, 16)
 SpeedLabel.Font = Enum.Font.GothamBold
-SpeedLabel.Text = "VELOCIDAD VUELO: 50 (MAX: 150)"
-SpeedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-SpeedLabel.TextSize = 12
+SpeedLabel.Text = "⚡ VELOCIDAD VUELO: 50"
+SpeedLabel.TextColor3 = Color3.fromRGB(0, 210, 255)
+SpeedLabel.TextSize = 11
 
 local SpeedFrame = Instance.new("Frame")
 SpeedFrame.Parent = ContentFrame
 SpeedFrame.BackgroundTransparency = 1
-SpeedFrame.Size = UDim2.new(0, 260, 0, 35)
+SpeedFrame.Size = UDim2.new(1, 0, 0, 32)
 
-local SpeedHorizontalList = Instance.new("UIListLayout")
-SpeedHorizontalList.Parent = SpeedFrame
-SpeedHorizontalList.FillDirection = Enum.FillDirection.Horizontal
-SpeedHorizontalList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-SpeedHorizontalList.Padding = UDim.new(0, 10)
+local SList = Instance.new("UIListLayout")
+SList.Parent = SpeedFrame
+SList.FillDirection = Enum.FillDirection.Horizontal
+SList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+SList.Padding = UDim.new(0, 8)
 
 local SpeedDownBtn = Instance.new("TextButton")
 SpeedDownBtn.Parent = SpeedFrame
-SpeedDownBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
-SpeedDownBtn.Size = UDim2.new(0, 125, 0, 35)
+SpeedDownBtn.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+SpeedDownBtn.Size = UDim2.new(0.5, -4, 1, 0)
 SpeedDownBtn.Font = Enum.Font.GothamBold
-SpeedDownBtn.Text = "(- ) BAJAR"
-SpeedDownBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
-SpeedDownBtn.TextSize = 13
-local UICorner_S1 = Instance.new("UICorner")
-UICorner_S1.CornerRadius = UDim.new(0, 6)
-UICorner_S1.Parent = SpeedDownBtn
+SpeedDownBtn.Text = "➖ DISMINUIR"
+SpeedDownBtn.TextColor3 = Color3.fromRGB(255, 215, 0)
+SpeedDownBtn.TextSize = 11
+Instance.new("UICorner", SpeedDownBtn).CornerRadius = UDim.new(0, 6)
 
 local SpeedUpBtn = Instance.new("TextButton")
 SpeedUpBtn.Parent = SpeedFrame
-SpeedUpBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
-SpeedUpBtn.Size = UDim2.new(0, 125, 0, 35)
+SpeedUpBtn.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+SpeedUpBtn.Size = UDim2.new(0.5, -4, 1, 0)
 SpeedUpBtn.Font = Enum.Font.GothamBold
-SpeedUpBtn.Text = "(+ ) SUBIR"
-SpeedUpBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
-SpeedUpBtn.TextSize = 13
-local UICorner_S2 = Instance.new("UICorner")
-UICorner_S2.CornerRadius = UDim.new(0, 6)
-UICorner_S2.Parent = SpeedUpBtn
+SpeedUpBtn.Text = "➕ AUMENTAR"
+SpeedUpBtn.TextColor3 = Color3.fromRGB(255, 215, 0)
+SpeedUpBtn.TextSize = 11
+Instance.new("UICorner", SpeedUpBtn).CornerRadius = UDim.new(0, 6)
 
--- Botón Noclip
-local NoclipBtn = createButton("NoclipBtn", "NOCLIP (PAREDES): APAGADO")
+-- Noclip & Inf Jump
+local NoclipBtn, NoclipStroke = createButton("NoclipBtn", "👻 NOCLIP: APAGADO")
+local InfJumpBtn, InfJumpStroke = createButton("InfJumpBtn", "🦘 SALTO INFINITO: APAGADO")
 
--- Botón Salto Infinito
-local InfJumpBtn = createButton("InfJumpBtn", "SALTO INFINITO: APAGADO")
-
--- Control de WalkSpeed (Velocidad Normal)
+-- Control WalkSpeed
 local WalkLabel = Instance.new("TextLabel")
 WalkLabel.Parent = ContentFrame
 WalkLabel.BackgroundTransparency = 1
-WalkLabel.Size = UDim2.new(0, 260, 0, 18)
+WalkLabel.Size = UDim2.new(1, 0, 0, 16)
 WalkLabel.Font = Enum.Font.GothamBold
-WalkLabel.Text = "VELOCIDAD CAMINAR: 16"
-WalkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-WalkLabel.TextSize = 12
+WalkLabel.Text = "🏃 VELOCIDAD CAMINAR: 16"
+WalkLabel.TextColor3 = Color3.fromRGB(0, 210, 255)
+WalkLabel.TextSize = 11
 
 local WalkFrame = Instance.new("Frame")
 WalkFrame.Parent = ContentFrame
 WalkFrame.BackgroundTransparency = 1
-WalkFrame.Size = UDim2.new(0, 260, 0, 35)
+WalkFrame.Size = UDim2.new(1, 0, 0, 32)
 
-local WalkHorizontalList = Instance.new("UIListLayout")
-WalkHorizontalList.Parent = WalkFrame
-WalkHorizontalList.FillDirection = Enum.FillDirection.Horizontal
-WalkHorizontalList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-WalkHorizontalList.Padding = UDim.new(0, 10)
+local WList = Instance.new("UIListLayout")
+WList.Parent = WalkFrame
+WList.FillDirection = Enum.FillDirection.Horizontal
+WList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+WList.Padding = UDim.new(0, 8)
 
 local WalkDownBtn = Instance.new("TextButton")
 WalkDownBtn.Parent = WalkFrame
-WalkDownBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
-WalkDownBtn.Size = UDim2.new(0, 125, 0, 35)
+WalkDownBtn.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+WalkDownBtn.Size = UDim2.new(0.5, -4, 1, 0)
 WalkDownBtn.Font = Enum.Font.GothamBold
-WalkDownBtn.Text = "(- 10) CAMINAR"
-WalkDownBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
-WalkDownBtn.TextSize = 12
-local UICorner_W1 = Instance.new("UICorner")
-UICorner_W1.CornerRadius = UDim.new(0, 6)
-UICorner_W1.Parent = WalkDownBtn
+WalkDownBtn.Text = "➖ CAMINAR"
+WalkDownBtn.TextColor3 = Color3.fromRGB(255, 215, 0)
+WalkDownBtn.TextSize = 11
+Instance.new("UICorner", WalkDownBtn).CornerRadius = UDim.new(0, 6)
 
 local WalkUpBtn = Instance.new("TextButton")
 WalkUpBtn.Parent = WalkFrame
-WalkUpBtn.BackgroundColor3 = Color3.fromRGB(40, 60, 100)
-WalkUpBtn.Size = UDim2.new(0, 125, 0, 35)
+WalkUpBtn.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+WalkUpBtn.Size = UDim2.new(0.5, -4, 1, 0)
 WalkUpBtn.Font = Enum.Font.GothamBold
-WalkUpBtn.Text = "(+ 10) CAMINAR"
-WalkUpBtn.TextColor3 = Color3.fromRGB(255, 220, 0)
-WalkUpBtn.TextSize = 12
-local UICorner_W2 = Instance.new("UICorner")
-UICorner_W2.CornerRadius = UDim.new(0, 6)
-UICorner_W2.Parent = WalkUpBtn
+WalkUpBtn.Text = "➕ CAMINAR"
+WalkUpBtn.TextColor3 = Color3.fromRGB(255, 215, 0)
+WalkUpBtn.TextSize = 11
+Instance.new("UICorner", WalkUpBtn).CornerRadius = UDim.new(0, 6)
 
--- Botón Click TP Tool
-local TPToolBtn = createButton("TPToolBtn", "OBTENER CLICK TP TOOL")
+-- TP Tool
+local TPToolBtn, TPToolStroke = createButton("TPToolBtn", "📍 OBTENER CLICK TP TOOL")
 
 -- ==========================================
--- LOGICA Y EVENTOS
+-- EVENTOS Y LÓGICA DE CONTROL
 -- ==========================================
 
--- Minimizar y Cerrar
 local minimized = false
 ToggleUIBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
     if minimized then
         ContentFrame.Visible = false
-        MainFrame.Size = UDim2.new(0, 300, 0, 40)
-        ToggleUIBtn.Text = "+"
+        MainFrame.Size = UDim2.new(0, 320, 0, 42)
+        ToggleUIBtn.Text = "➕"
     else
         ContentFrame.Visible = true
-        MainFrame.Size = UDim2.new(0, 300, 0, 380)
-        ToggleUIBtn.Text = "-"
+        MainFrame.Size = UDim2.new(0, 320, 0, 400)
+        ToggleUIBtn.Text = "—"
     end
 end)
 
@@ -273,22 +275,7 @@ CloseUIBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- Lógica Fly Speed
-SpeedUpBtn.MouseButton1Click:Connect(function()
-    if getgenv().FlySpeed < 150 then
-        getgenv().FlySpeed = getgenv().FlySpeed + 10
-        SpeedLabel.Text = "VELOCIDAD VUELO: " .. getgenv().FlySpeed .. " (MAX: 150)"
-    end
-end)
-
-SpeedDownBtn.MouseButton1Click:Connect(function()
-    if getgenv().FlySpeed > 10 then
-        getgenv().FlySpeed = getgenv().FlySpeed - 10
-        SpeedLabel.Text = "VELOCIDAD VUELO: " .. getgenv().FlySpeed .. " (MAX: 150)"
-    end
-end)
-
--- Lógica Fly Toggle
+-- Fly
 FlyBtn.MouseButton1Click:Connect(function()
     getgenv().FlyActive = not getgenv().FlyActive
     local char = player.Character
@@ -297,9 +284,9 @@ FlyBtn.MouseButton1Click:Connect(function()
     local humanoid = char:FindFirstChildOfClass("Humanoid")
 
     if getgenv().FlyActive then
-        FlyBtn.Text = "FLY: ENCENDIDO"
-        FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
-        
+        FlyBtn.Text = "✈️ FLY: ENCENDIDO"
+        FlyBtn.TextColor3 = Color3.fromRGB(0, 255, 150)
+        FlyStroke.Color = Color3.fromRGB(0, 255, 150)
         if humanoid then humanoid.PlatformStand = true end
 
         bv = Instance.new("BodyVelocity")
@@ -314,62 +301,78 @@ FlyBtn.MouseButton1Click:Connect(function()
         bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
         bg.CFrame = hrp.CFrame
     else
-        FlyBtn.Text = "FLY: APAGADO"
-        FlyBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
-        
+        FlyBtn.Text = "✈️ FLY: APAGADO"
+        FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        FlyStroke.Color = Color3.fromRGB(45, 60, 90)
         if hrp:FindFirstChild("HubFlyVel") then hrp.HubFlyVel:Destroy() end
         if hrp:FindFirstChild("HubFlyGyro") then hrp.HubFlyGyro:Destroy() end
         if humanoid then humanoid.PlatformStand = false end
     end
 end)
 
--- Lógica Noclip
-NoclipBtn.MouseButton1Click:Connect(function()
-    getgenv().NoclipActive = not getgenv().NoclipActive
-    if getgenv().NoclipActive then
-        NoclipBtn.Text = "NOCLIP (PAREDES): ENCENDIDO"
-        NoclipBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
-    else
-        NoclipBtn.Text = "NOCLIP (PAREDES): APAGADO"
-        NoclipBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+SpeedUpBtn.MouseButton1Click:Connect(function()
+    if getgenv().FlySpeed < 150 then
+        getgenv().FlySpeed = getgenv().FlySpeed + 10
+        SpeedLabel.Text = "⚡ VELOCIDAD VUELO: " .. getgenv().FlySpeed
     end
 end)
 
--- Lógica Inf Jump
+SpeedDownBtn.MouseButton1Click:Connect(function()
+    if getgenv().FlySpeed > 10 then
+        getgenv().FlySpeed = getgenv().FlySpeed - 10
+        SpeedLabel.Text = "⚡ VELOCIDAD VUELO: " .. getgenv().FlySpeed
+    end
+end)
+
+-- Noclip
+NoclipBtn.MouseButton1Click:Connect(function()
+    getgenv().NoclipActive = not getgenv().NoclipActive
+    if getgenv().NoclipActive then
+        NoclipBtn.Text = "👻 NOCLIP: ENCENDIDO"
+        NoclipBtn.TextColor3 = Color3.fromRGB(0, 255, 150)
+        NoclipStroke.Color = Color3.fromRGB(0, 255, 150)
+    else
+        NoclipBtn.Text = "👻 NOCLIP: APAGADO"
+        NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        NoclipStroke.Color = Color3.fromRGB(45, 60, 90)
+    end
+end)
+
+-- Inf Jump
 InfJumpBtn.MouseButton1Click:Connect(function()
     getgenv().InfJumpActive = not getgenv().InfJumpActive
     if getgenv().InfJumpActive then
-        InfJumpBtn.Text = "SALTO INFINITO: ENCENDIDO"
-        InfJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+        InfJumpBtn.Text = "🦘 SALTO INFINITO: ENCENDIDO"
+        InfJumpBtn.TextColor3 = Color3.fromRGB(0, 255, 150)
+        InfJumpStroke.Color = Color3.fromRGB(0, 255, 150)
     else
-        InfJumpBtn.Text = "SALTO INFINITO: APAGADO"
-        InfJumpBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+        InfJumpBtn.Text = "🦘 SALTO INFINITO: APAGADO"
+        InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        InfJumpStroke.Color = Color3.fromRGB(45, 60, 90)
     end
 end)
 
 UserInputService.JumpRequest:Connect(function()
     if getgenv().InfJumpActive and player.Character then
-        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-        end
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
     end
 end)
 
--- Lógica WalkSpeed (Aumentar y Disminuir)
+-- WalkSpeed
 WalkUpBtn.MouseButton1Click:Connect(function()
     getgenv().WalkSpeedVal = getgenv().WalkSpeedVal + 10
-    WalkLabel.Text = "VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
+    WalkLabel.Text = "🏃 VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
 end)
 
 WalkDownBtn.MouseButton1Click:Connect(function()
     if getgenv().WalkSpeedVal > 16 then
         getgenv().WalkSpeedVal = getgenv().WalkSpeedVal - 10
-        WalkLabel.Text = "VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
+        WalkLabel.Text = "🏃 VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
     end
 end)
 
--- Lógica Click TP Tool
+-- TP Tool
 TPToolBtn.MouseButton1Click:Connect(function()
     local tool = Instance.new("Tool")
     tool.Name = "Click TP"
@@ -384,19 +387,16 @@ TPToolBtn.MouseButton1Click:Connect(function()
     end)
 end)
 
--- Loops de físicas (Noclip, Vuelo y WalkSpeed forzado)
+-- Loops
 RunService.Stepped:Connect(function()
     if getgenv().NoclipActive and player.Character then
         for _, part in ipairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false
-            end
+            if part:IsA("BasePart") then part.CanCollide = false end
         end
     end
 end)
 
 RunService.RenderStepped:Connect(function(dt)
-    -- Forzar WalkSpeed continuo para que el juego no lo restablezca
     if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
         local hum = player.Character:FindFirstChildOfClass("Humanoid")
         if hum.WalkSpeed ~= getgenv().WalkSpeedVal then
@@ -411,15 +411,12 @@ RunService.RenderStepped:Connect(function(dt)
         
         if hrp:FindFirstChild("HubFlyVel") and hrp:FindFirstChild("HubFlyGyro") then
             bg.CFrame = cam.CFrame
-            
             if humanoid then
                 local moveDir = humanoid.MoveDirection
                 local targetVelocity = Vector3.new(0, 0, 0)
-                
                 if moveDir.Magnitude > 0 then
                     targetVelocity = cam.CFrame:VectorToWorldSpace(Vector3.new(moveDir.X, 0, moveDir.Z)) * getgenv().FlySpeed
                 end
-                
                 currentVelocity = currentVelocity:Lerp(targetVelocity, math.clamp(dt * 12, 0, 1))
                 bv.Velocity = currentVelocity
             end
