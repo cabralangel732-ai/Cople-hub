@@ -1,5 +1,5 @@
 -- ==========================================
--- TOXIC CYBER HUB - TABBED EDITION (PARTE 1)
+-- TOXIC CYBER HUB - FIX COMPLETO DE UI
 -- ==========================================
 
 local CoreGui = game:GetService("CoreGui")
@@ -19,11 +19,11 @@ getgenv().NoclipActive = false
 getgenv().InfJumpActive = false
 getgenv().FlySpeed = 50
 getgenv().WalkSpeedVal = 16
-getgenv().AutoFarmActive = false
 
 local bv, bg
 local currentVelocity = Vector3.new(0, 0, 0)
 
+-- Contenedor Principal
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ToxicCyberHubTabs"
 ScreenGui.Parent = CoreGui
@@ -38,26 +38,18 @@ MainFrame.Size = UDim2.new(0, 320, 0, 420)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 10)
-MainCorner.Parent = MainFrame
-
-local MainStroke = Instance.new("UIStroke")
-MainStroke.Parent = MainFrame
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+local MainStroke = Instance.new("UIStroke", MainFrame)
 MainStroke.Color = Color3.fromRGB(0, 255, 128)
 MainStroke.Thickness = 1.8
 
-local TopBar = Instance.new("Frame")
-TopBar.Parent = MainFrame
+-- Barra Superior
+local TopBar = Instance.new("Frame", MainFrame)
 TopBar.BackgroundColor3 = Color3.fromRGB(18, 24, 38)
 TopBar.Size = UDim2.new(1, 0, 0, 40)
+Instance.new("UICorner", TopBar).CornerRadius = UDim.new(0, 10)
 
-local TopCorner = Instance.new("UICorner")
-TopCorner.CornerRadius = UDim.new(0, 10)
-TopCorner.Parent = TopBar
-
-local Title = Instance.new("TextLabel")
-Title.Parent = TopBar
+local Title = Instance.new("TextLabel", TopBar)
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0, 12, 0, 0)
 Title.Size = UDim2.new(0, 200, 1, 0)
@@ -68,8 +60,7 @@ Title.TextColor3 = Color3.fromRGB(255, 215, 0)
 Title.TextSize = 14
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
-local CloseUIBtn = Instance.new("TextButton")
-CloseUIBtn.Parent = TopBar
+local CloseUIBtn = Instance.new("TextButton", TopBar)
 CloseUIBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 60)
 CloseUIBtn.Position = UDim2.new(1, -34, 0, 7)
 CloseUIBtn.Size = UDim2.new(0, 26, 0, 26)
@@ -79,19 +70,17 @@ CloseUIBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseUIBtn.TextSize = 12
 Instance.new("UICorner", CloseUIBtn).CornerRadius = UDim.new(0, 6)
 
-local TabBar = Instance.new("Frame")
-TabBar.Parent = MainFrame
+-- Botones de Pestañas
+local TabBar = Instance.new("Frame", MainFrame)
 TabBar.BackgroundTransparency = 1
 TabBar.Position = UDim2.new(0, 10, 0, 45)
 TabBar.Size = UDim2.new(1, -20, 0, 32)
 
-local TabList = Instance.new("UIListLayout")
-TabList.Parent = TabBar
+local TabList = Instance.new("UIListLayout", TabBar)
 TabList.FillDirection = Enum.FillDirection.Horizontal
 TabList.Padding = UDim.new(0, 8)
 
-local Tab1Btn = Instance.new("TextButton")
-Tab1Btn.Parent = TabBar
+local Tab1Btn = Instance.new("TextButton", TabBar)
 Tab1Btn.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
 Tab1Btn.Size = UDim2.new(0.5, -4, 1, 0)
 Tab1Btn.Font = Enum.Font.GothamBold
@@ -100,8 +89,7 @@ Tab1Btn.TextColor3 = Color3.fromRGB(11, 14, 20)
 Tab1Btn.TextSize = 11
 Instance.new("UICorner", Tab1Btn).CornerRadius = UDim.new(0, 6)
 
-local Tab2Btn = Instance.new("TextButton")
-Tab2Btn.Parent = TabBar
+local Tab2Btn = Instance.new("TextButton", TabBar)
 Tab2Btn.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
 Tab2Btn.Size = UDim2.new(0.5, -4, 1, 0)
 Tab2Btn.Font = Enum.Font.GothamBold
@@ -110,18 +98,17 @@ Tab2Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
 Tab2Btn.TextSize = 11
 Instance.new("UICorner", Tab2Btn).CornerRadius = UDim.new(0, 6)
 
-local Tab1Content = Instance.new("ScrollingFrame")
-Tab1Content.Parent = MainFrame
+-- Marcos de Contenido
+local Tab1Content = Instance.new("ScrollingFrame", MainFrame)
 Tab1Content.BackgroundTransparency = 1
 Tab1Content.Position = UDim2.new(0, 10, 0, 85)
 Tab1Content.Size = UDim2.new(1, -20, 1, -95)
-Tab1Content.CanvasSize = UDim2.new(0, 0, 0, 420)
+Tab1Content.CanvasSize = UDim2.new(0, 0, 0, 380)
 Tab1Content.ScrollBarThickness = 4
 Tab1Content.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 128)
 Tab1Content.Visible = true
 
-local Tab2Content = Instance.new("ScrollingFrame")
-Tab2Content.Parent = MainFrame
+local Tab2Content = Instance.new("ScrollingFrame", MainFrame)
 Tab2Content.BackgroundTransparency = 1
 Tab2Content.Position = UDim2.new(0, 10, 0, 85)
 Tab2Content.Size = UDim2.new(1, -20, 1, -95)
@@ -138,6 +125,7 @@ local List2 = Instance.new("UIListLayout", Tab2Content)
 List2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 List2.Padding = UDim.new(0, 8)
 
+-- Cambio de Pestañas
 Tab1Btn.MouseButton1Click:Connect(function()
     Tab1Content.Visible = true
     Tab2Content.Visible = false
@@ -171,14 +159,130 @@ local function createButton(parentFrame, name, text)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.TextSize = 12
     
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = btn
-
-    local stroke = Instance.new("UIStroke")
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+    local stroke = Instance.new("UIStroke", btn)
     stroke.Name = "BtnStroke"
-    stroke.Parent = btn
     stroke.Color = Color3.fromRGB(45, 60, 90)
     
     return btn, stroke
 end
+
+-- Elementos Pestaña Movilidad
+local FlyBtn, FlyStroke = createButton(Tab1Content, "FlyBtn", "✈️ FLY: APAGADO")
+local NoclipBtn, NoclipStroke = createButton(Tab1Content, "NoclipBtn", "👻 NOCLIP: APAGADO")
+local InfJumpBtn, InfJumpStroke = createButton(Tab1Content, "InfJumpBtn", "🦘 SALTO INFINITO: APAGADO")
+local TPToolBtn, TPToolStroke = createButton(Tab1Content, "TPToolBtn", "📍 OBTENER CLICK TP TOOL")
+
+-- Elementos Pestaña Auto-Farm
+local FarmBtn, FarmStroke = createButton(Tab2Content, "FarmBtn", "⚡ PANEL AUTO-FARM")
+
+-- Lógica de Movilidad
+FlyBtn.MouseButton1Click:Connect(function()
+    getgenv().FlyActive = not getgenv().FlyActive
+    local char = player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = char.HumanoidRootPart
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+    if getgenv().FlyActive then
+        FlyBtn.Text = "✈️ FLY: ENCENDIDO"
+        FlyBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
+        FlyStroke.Color = Color3.fromRGB(0, 255, 128)
+        if humanoid then humanoid.PlatformStand = true end
+
+        bv = Instance.new("BodyVelocity")
+        bv.Name = "HubFlyVel"
+        bv.Parent = hrp
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.new(0, 0, 0)
+
+        bg = Instance.new("BodyGyro")
+        bg.Name = "HubFlyGyro"
+        bg.Parent = hrp
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.CFrame = hrp.CFrame
+    else
+        FlyBtn.Text = "✈️ FLY: APAGADO"
+        FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        FlyStroke.Color = Color3.fromRGB(45, 60, 90)
+        if hrp:FindFirstChild("HubFlyVel") then hrp.HubFlyVel:Destroy() end
+        if hrp:FindFirstChild("HubFlyGyro") then hrp.HubFlyGyro:Destroy() end
+        if humanoid then humanoid.PlatformStand = false end
+    end
+end)
+
+NoclipBtn.MouseButton1Click:Connect(function()
+    getgenv().NoclipActive = not getgenv().NoclipActive
+    if getgenv().NoclipActive then
+        NoclipBtn.Text = "👻 NOCLIP: ENCENDIDO"
+        NoclipBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
+        NoclipStroke.Color = Color3.fromRGB(0, 255, 128)
+    else
+        NoclipBtn.Text = "👻 NOCLIP: APAGADO"
+        NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        NoclipStroke.Color = Color3.fromRGB(45, 60, 90)
+    end
+end)
+
+InfJumpBtn.MouseButton1Click:Connect(function()
+    getgenv().InfJumpActive = not getgenv().InfJumpActive
+    if getgenv().InfJumpActive then
+        InfJumpBtn.Text = "🦘 SALTO INFINITO: ENCENDIDO"
+        InfJumpBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
+        InfJumpStroke.Color = Color3.fromRGB(0, 255, 128)
+    else
+        InfJumpBtn.Text = "🦘 SALTO INFINITO: APAGADO"
+        InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        InfJumpStroke.Color = Color3.fromRGB(45, 60, 90)
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if getgenv().InfJumpActive and player.Character then
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
+    end
+end)
+
+TPToolBtn.MouseButton1Click:Connect(function()
+    local tool = Instance.new("Tool")
+    tool.Name = "Click TP"
+    tool.RequiresHandle = false
+    tool.Parent = player.Backpack
+
+    tool.Activated:Connect(function()
+        local mouse = player:GetMouse()
+        if mouse and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0))
+        end
+    end)
+end)
+
+RunService.Stepped:Connect(function()
+    if getgenv().NoclipActive and player.Character then
+        for _, part in ipairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end
+end)
+
+RunService.RenderStepped:Connect(function(dt)
+    if getgenv().FlyActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        local cam = workspace.CurrentCamera
+        
+        if hrp:FindFirstChild("HubFlyVel") and hrp:FindFirstChild("HubFlyGyro") then
+            bg.CFrame = cam.CFrame
+            if humanoid then
+                local moveDir = humanoid.MoveDirection
+                local targetVelocity = Vector3.new(0, 0, 0)
+                if moveDir.Magnitude > 0 then
+                    targetVelocity = cam.CFrame:VectorToWorldSpace(Vector3.new(moveDir.X, 0, moveDir.Z)) * getgenv().FlySpeed
+                end
+                currentVelocity = currentVelocity:Lerp(targetVelocity, math.clamp(dt * 12, 0, 1))
+                bv.Velocity = currentVelocity
+            end
+        end
+    end
+end)
