@@ -1,3 +1,4 @@
+
 -- ==========================================
 -- CUSTOM HUB UNIVERSAL PRO - AZUL Y AMARILLO (MESSI EDITION)
 -- ==========================================
@@ -16,7 +17,7 @@ pcall(function()
 end)
 
 -- ID de imagen por defecto para el Banner
-local IMAGE_ID = "rbxassetid://13215273763" -- ID de Messi (puedes cambiarla)
+local IMAGE_ID = "rbxassetid://13215273763"
 
 -- Variables globales
 getgenv().FlyActive = false
@@ -355,22 +356,16 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- Lógica WalkSpeed
+-- Lógica WalkSpeed (Aumentar y Disminuir)
 WalkUpBtn.MouseButton1Click:Connect(function()
     getgenv().WalkSpeedVal = getgenv().WalkSpeedVal + 10
     WalkLabel.Text = "VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
-    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-        player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = getgenv().WalkSpeedVal
-    end
 end)
 
 WalkDownBtn.MouseButton1Click:Connect(function()
     if getgenv().WalkSpeedVal > 16 then
         getgenv().WalkSpeedVal = getgenv().WalkSpeedVal - 10
         WalkLabel.Text = "VELOCIDAD CAMINAR: " .. getgenv().WalkSpeedVal
-        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-            player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = getgenv().WalkSpeedVal
-        end
     end
 end)
 
@@ -389,7 +384,7 @@ TPToolBtn.MouseButton1Click:Connect(function()
     end)
 end)
 
--- Loops de físicas (Noclip y Vuelo)
+-- Loops de físicas (Noclip, Vuelo y WalkSpeed forzado)
 RunService.Stepped:Connect(function()
     if getgenv().NoclipActive and player.Character then
         for _, part in ipairs(player.Character:GetDescendants()) do
@@ -401,6 +396,14 @@ RunService.Stepped:Connect(function()
 end)
 
 RunService.RenderStepped:Connect(function(dt)
+    -- Forzar WalkSpeed continuo para que el juego no lo restablezca
+    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum.WalkSpeed ~= getgenv().WalkSpeedVal then
+            hum.WalkSpeed = getgenv().WalkSpeedVal
+        end
+    end
+
     if getgenv().FlyActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
         local hrp = player.Character.HumanoidRootPart
         local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
@@ -421,10 +424,5 @@ RunService.RenderStepped:Connect(function(dt)
                 bv.Velocity = currentVelocity
             end
         end
-    end
-    
-    -- Mantener WalkSpeed activo
-    if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-        player.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = getgenv().WalkSpeedVal
     end
 end)
