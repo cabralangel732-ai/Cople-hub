@@ -1,108 +1,143 @@
 -- ==========================================
--- TOXIC CYBER HUB - CÓDIGO COMPLETO (PARTE 2)
+-- CONTENIDO PESTAÑA 2: AUTO-FARM SELECCIONABLE
 -- ==========================================
 
-FlyBtn.MouseButton1Click:Connect(function()
-    getgenv().FlyActive = not getgenv().FlyActive
-    local char = player.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-    local hrp = char.HumanoidRootPart
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
+getgenv().FarmTarget = "Huevos" -- Opciones: "Huevos", "Grasa/Comida", "Todo"
 
-    if getgenv().FlyActive then
-        FlyBtn.Text = "✈️ FLY: ENCENDIDO"
-        FlyBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
-        FlyS.Color = Color3.fromRGB(0, 255, 128)
-        if humanoid then humanoid.PlatformStand = true end
+local TargetLabel = Instance.new("TextLabel")
+TargetLabel.Parent = Tab2Content
+TargetLabel.BackgroundTransparency = 1
+TargetLabel.Size = UDim2.new(1, 0, 0, 16)
+TargetLabel.Font = Enum.Font.GothamBold
+TargetLabel.Text = "🎯 OBJETIVO: HUEVOS"
+TargetLabel.TextColor3 = Color3.fromRGB(0, 255, 128)
+TargetLabel.TextSize = 11
 
-        bv = Instance.new("BodyVelocity", hrp)
-        bv.Name = "HubFlyVel"
-        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-        bv.Velocity = Vector3.new(0, 0, 0)
+-- Botones para elegir qué farmear
+local SelectFrame = Instance.new("Frame")
+SelectFrame.Parent = Tab2Content
+SelectFrame.BackgroundTransparency = 1
+SelectFrame.Size = UDim2.new(1, 0, 0, 32)
 
-        bg = Instance.new("BodyGyro", hrp)
-        bg.Name = "HubFlyGyro"
-        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-        bg.CFrame = hrp.CFrame
+local SelList = Instance.new("UIListLayout")
+SelList.Parent = SelectFrame
+SelList.FillDirection = Enum.FillDirection.Horizontal
+SelList.Padding = UDim.new(0, 6)
+
+local BtnHuevos = Instance.new("TextButton")
+BtnHuevos.Parent = SelectFrame
+BtnHuevos.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+BtnHuevos.Size = UDim2.new(0.33, -4, 1, 0)
+BtnHuevos.Font = Enum.Font.GothamBold
+BtnHuevos.Text = "🥚 Huevos"
+BtnHuevos.TextColor3 = Color3.fromRGB(11, 14, 20)
+BtnHuevos.TextSize = 10
+Instance.new("UICorner", BtnHuevos).CornerRadius = UDim.new(0, 6)
+
+local BtnComida = Instance.new("TextButton")
+BtnComida.Parent = SelectFrame
+BtnComida.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+BtnComida.Size = UDim2.new(0.33, -4, 1, 0)
+BtnComida.Font = Enum.Font.GothamBold
+BtnComida.Text = "🥩 Grasa"
+BtnComida.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnComida.TextSize = 10
+Instance.new("UICorner", BtnComida).CornerRadius = UDim.new(0, 6)
+
+local BtnTodo = Instance.new("TextButton")
+BtnTodo.Parent = SelectFrame
+BtnTodo.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+BtnTodo.Size = UDim2.new(0.33, -4, 1, 0)
+BtnTodo.Font = Enum.Font.GothamBold
+BtnTodo.Text = "🔥 Todo"
+BtnTodo.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnTodo.TextSize = 10
+Instance.new("UICorner", BtnTodo).CornerRadius = UDim.new(0, 6)
+
+local FarmBtn, FarmStroke = createButton(Tab2Content, "FarmBtn", "⚡ INICIAR AUTO-FARM: APAGADO")
+
+-- Seleccionar tipo de objeto
+BtnHuevos.MouseButton1Click:Connect(function()
+    getgenv().FarmTarget = "Huevos"
+    TargetLabel.Text = "🎯 OBJETIVO: HUEVOS"
+    BtnHuevos.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+    BtnHuevos.TextColor3 = Color3.fromRGB(11, 14, 20)
+    BtnComida.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    BtnComida.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BtnTodo.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    BtnTodo.TextColor3 = Color3.fromRGB(255, 255, 255)
+end)
+
+BtnComida.MouseButton1Click:Connect(function()
+    getgenv().FarmTarget = "Grasa"
+    TargetLabel.Text = "🎯 OBJETIVO: GRASA / COMIDA"
+    BtnComida.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+    BtnComida.TextColor3 = Color3.fromRGB(11, 14, 20)
+    BtnHuevos.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    BtnHuevos.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BtnTodo.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    BtnTodo.TextColor3 = Color3.fromRGB(255, 255, 255)
+end)
+
+BtnTodo.MouseButton1Click:Connect(function()
+    getgenv().FarmTarget = "Todo"
+    TargetLabel.Text = "🎯 OBJETIVO: TODO EL MAPA"
+    BtnTodo.BackgroundColor3 = Color3.fromRGB(0, 255, 128)
+    BtnTodo.TextColor3 = Color3.fromRGB(11, 14, 20)
+    BtnHuevos.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    BtnHuevos.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BtnComida.BackgroundColor3 = Color3.fromRGB(20, 28, 45)
+    BtnComida.TextColor3 = Color3.fromRGB(255, 255, 255)
+end)
+
+-- Lógica de encendido
+FarmBtn.MouseButton1Click:Connect(function()
+    getgenv().AutoFarmActive = not getgenv().AutoFarmActive
+    if getgenv().AutoFarmActive then
+        FarmBtn.Text = "⚡ AUTO-FARM: ENCENDIDO"
+        FarmBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
+        FarmStroke.Color = Color3.fromRGB(0, 255, 128)
     else
-        FlyBtn.Text = "✈️ FLY: APAGADO"
-        FlyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        FlyS.Color = Color3.fromRGB(45, 60, 90)
-        if hrp:FindFirstChild("HubFlyVel") then hrp.HubFlyVel:Destroy() end
-        if hrp:FindFirstChild("HubFlyGyro") then hrp.HubFlyGyro:Destroy() end
-        if humanoid then humanoid.PlatformStand = false end
+        FarmBtn.Text = "⚡ AUTO-FARM: APAGADO"
+        FarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        FarmStroke.Color = Color3.fromRGB(45, 60, 90)
     end
 end)
 
-NoclipBtn.MouseButton1Click:Connect(function()
-    getgenv().NoclipActive = not getgenv().NoclipActive
-    if getgenv().NoclipActive then
-        NoclipBtn.Text = "👻 NOCLIP: ENCENDIDO"
-        NoclipBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
-        NoclipS.Color = Color3.fromRGB(0, 255, 128)
-    else
-        NoclipBtn.Text = "👻 NOCLIP: APAGADO"
-        NoclipBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        NoclipS.Color = Color3.fromRGB(45, 60, 90)
-    end
-end)
-
-InfJumpBtn.MouseButton1Click:Connect(function()
-    getgenv().InfJumpActive = not getgenv().InfJumpActive
-    if getgenv().InfJumpActive then
-        InfJumpBtn.Text = "🦘 SALTO INFINITO: ENCENDIDO"
-        InfJumpBtn.TextColor3 = Color3.fromRGB(0, 255, 128)
-        InfJumpS.Color = Color3.fromRGB(0, 255, 128)
-    else
-        InfJumpBtn.Text = "🦘 SALTO INFINITO: APAGADO"
-        InfJumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        InfJumpS.Color = Color3.fromRGB(45, 60, 90)
-    end
-end)
-
-UserInputService.JumpRequest:Connect(function()
-    if getgenv().InfJumpActive and player.Character then
-        local hum = player.Character:FindFirstChildOfClass("Humanoid")
-        if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
-    end
-end)
-
-TPToolBtn.MouseButton1Click:Connect(function()
-    local tool = Instance.new("Tool", player.Backpack)
-    tool.Name = "Click TP"
-    tool.RequiresHandle = false
-    tool.Activated:Connect(function()
-        local mouse = player:GetMouse()
-        if mouse and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = CFrame.new(mouse.Hit.Position + Vector3.new(0, 3, 0))
-        end
-    end)
-end)
-
-RunService.Stepped:Connect(function()
-    if getgenv().NoclipActive and player.Character then
-        for _, part in ipairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
-        end
-    end
-end)
-
-RunService.RenderStepped:Connect(function(dt)
-    if getgenv().FlyActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = player.Character.HumanoidRootPart
-        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-        local cam = workspace.CurrentCamera
-        
-        if hrp:FindFirstChild("HubFlyVel") and hrp:FindFirstChild("HubFlyGyro") then
-            bg.CFrame = cam.CFrame
-            if humanoid then
-                local moveDir = humanoid.MoveDirection
-                local targetVelocity = Vector3.new(0, 0, 0)
-                if moveDir.Magnitude > 0 then
-                    targetVelocity = cam.CFrame:VectorToWorldSpace(Vector3.new(moveDir.X, 0, moveDir.Z)) * getgenv().FlySpeed
+-- Bucle de Filtro Avanzado
+task.spawn(function()
+    while task.wait(0.3) do
+        if getgenv().AutoFarmActive and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = player.Character.HumanoidRootPart
+            local targetType = getgenv().FarmTarget
+            
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if not getgenv().AutoFarmActive then break end
+                
+                local name = obj.Name:lower()
+                local isEgg = name:find("egg") or name:find("huevo") or name:find("nest")
+                local isFood = name:find("fat") or name:find("grasa") or name:find("food")
+                
+                local valid = false
+                if targetType == "Huevos" and isEgg then valid = true end
+                if targetType == "Grasa" and isFood then valid = true end
+                if targetType == "Todo" and (isEgg or isFood) then valid = true end
+                
+                if valid then
+                    -- Si tiene interacción automática
+                    local prompt = obj:FindFirstChildWhichIsA("ProximityPrompt") or obj.Parent:FindFirstChildWhichIsA("ProximityPrompt")
+                    local targetPart = obj:IsA("BasePart") and obj or (obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")))
+                    
+                    if targetPart then
+                        -- Solo farmear cosas dentro de un rango cercano si no quieres cruzar todo el mapa
+                        hrp.CFrame = targetPart.CFrame + Vector3.new(0, 2.5, 0)
+                        task.wait(0.15)
+                        if prompt then
+                            pcall(function() fireproximityprompt(prompt) end)
+                        end
+                        task.wait(0.2)
+                    end
                 end
-                currentVelocity = currentVelocity:Lerp(targetVelocity, math.clamp(dt * 12, 0, 1))
-                bv.Velocity = currentVelocity
             end
         end
     end
