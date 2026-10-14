@@ -1,5 +1,5 @@
 --========================================================
--- ☣️ TOXIC CYBER HUB VIP V3 | FULL MOBILE EDITION + MINIMIZE BUTTON
+-- ☣️ TOXIC CYBER HUB VIP V3 | FULL MOBILE EDITION
 --========================================================
 
 local Players = game:GetService("Players")
@@ -54,7 +54,7 @@ pcall(function() gui.Parent = CoreGui end)
 if not gui.Parent then gui.Parent = playerGui end
 
 -- ==========================================
--- BOTÓN FLOTANTE PARA ABRIR / CERRAR (MINIMIZAR)
+-- BOTÓN FLOTANTE PARA ABRIR / CERRAR
 -- ==========================================
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Name = "OpenCloseBtn"
@@ -66,7 +66,7 @@ toggleBtn.TextColor3 = GREEN
 toggleBtn.TextSize = 28
 toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.Active = true
-toggleBtn.Draggable = true -- Permite moverlo en la pantalla táctil
+toggleBtn.Draggable = true
 toggleBtn.Parent = gui
 
 local btnCorner = Instance.new("UICorner")
@@ -90,8 +90,11 @@ main.Active = true
 main.Visible = true
 main.Parent = gui
 
--- Lógica para abrir y cerrar al tocar el botón flotante
-toggleBtn.Activated:Connect(function()
+-- Eventos táctiles para abrir/cerrar
+toggleBtn.MouseButton1Click:Connect(function()
+    main.Visible = not main.Visible
+end)
+toggleBtn.TouchTap:Connect(function()
     main.Visible = not main.Visible
 end)
 
@@ -167,8 +170,10 @@ closeBtn.TextSize = 18
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.Parent = header
 
--- Botón de cerrar la ventana principal (la oculta y deja el botón flotante)
-closeBtn.Activated:Connect(function()
+closeBtn.MouseButton1Click:Connect(function()
+    main.Visible = false
+end)
+closeBtn.TouchTap:Connect(function()
     main.Visible = false
 end)
 
@@ -306,12 +311,15 @@ local function addToggle(card, text, default, callback)
     knobCorner.Parent = knob
 
     local state = default
-    tog.Activated:Connect(function()
+    local function trigger()
         state = not state
         tog.BackgroundColor3 = state and GREEN or OFF_TOGGLE
         knob.Position = state and UDim2.new(1, -14, 0.5, -6) or UDim2.new(0, 2, 0.5, -6)
         if callback then callback(state) end
-    end)
+    end
+
+    tog.MouseButton1Click:Connect(trigger)
+    tog.TouchTap:Connect(trigger)
 end
 
 -- Creador de Inputs (WalkSpeed / JumpPower)
@@ -372,12 +380,15 @@ local function addInputToggle(card, text, valText, default, callback)
     knobCorner.Parent = knob
 
     local state = default
-    tog.Activated:Connect(function()
+    local function trigger()
         state = not state
         tog.BackgroundColor3 = state and GREEN or OFF_TOGGLE
         knob.Position = state and UDim2.new(1, -14, 0.5, -6) or UDim2.new(0, 2, 0.5, -6)
         if callback then callback(state, tonumber(box.Text) or valText) end
-    end)
+    end
+
+    tog.MouseButton1Click:Connect(trigger)
+    tog.TouchTap:Connect(trigger)
 
     box.FocusLost:Connect(function()
         if callback and state then
@@ -406,13 +417,16 @@ local function addGameButton(card, gameName, placeId)
     btnStroke.Thickness = 1
     btnStroke.Parent = btn
 
-    btn.Activated:Connect(function()
+    local function tp()
         if placeId and placeId ~= 0 then
             pcall(function() TeleportService:Teleport(placeId, player) end)
         else
             warn("Pon el PlaceId real de " .. gameName)
         end
-    end)
+    end
+
+    btn.MouseButton1Click:Connect(tp)
+    btn.TouchTap:Connect(tp)
 end
 
 -- Lista de Pestañas
@@ -501,7 +515,7 @@ for _, t in ipairs(tabs) do
     btnCorner.CornerRadius = UDim.new(0, 6)
     btnCorner.Parent = btn
 
-    btn.Activated:Connect(function()
+    local function selectTab()
         for pageName, pageFrame in pairs(pages) do
             pageFrame.Visible = (pageName == t.name)
         end
@@ -514,7 +528,10 @@ for _, t in ipairs(tabs) do
         btn.BackgroundTransparency = 0
         btn.BackgroundColor3 = Color3.fromRGB(12, 35, 22)
         btn.TextColor3 = GREEN
-    end)
+    end
+
+    btn.MouseButton1Click:Connect(selectTab)
+    btn.TouchTap:Connect(selectTab)
 
     if t.name == "Home" then
         btn.BackgroundTransparency = 0
@@ -524,7 +541,7 @@ for _, t in ipairs(tabs) do
     end
 end
 
--- BUCLE PRINCIPAL DE FUNCIONES (WalkSpeed, JumpPower, Noclip, etc.)
+-- BUCLE PRINCIPAL DE FUNCIONES
 RunService.Stepped:Connect(function()
     pcall(function()
         local char = player.Character
@@ -546,7 +563,7 @@ RunService.Stepped:Connect(function()
     end)
 end)
 
--- Infinite Jump Activo
+-- Infinite Jump
 UserInputService.JumpRequest:Connect(function()
     if Features.InfiniteJump then
         local char = player.Character
@@ -556,7 +573,7 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- Arrastrar la ventana principal en Android
+-- Arrastrar la ventana principal
 local dragging, dragStart, startPos
 header.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -579,4 +596,4 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
-print("TOXIC CYBER HUB VIP V3 CON BOTÓN FLOTANTE CARGADO")
+print("TOXIC CYBER HUB VIP V3 CARGADO EXITOSAMENTE")
