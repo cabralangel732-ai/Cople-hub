@@ -1,0 +1,64 @@
+--====================================================
+-- TOXIC DUPLICATOR VIP
+-- STEAL A SEED | PURPLE GOD EDITION
+-- INTERFAZ MOVIL INDEPENDIENTE
+--====================================================
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local old = playerGui:FindFirstChild("ToxicDuplicatorVIP")
+if old then
+    old:Destroy()
+end
+
+local PURPLE = Color3.fromRGB(180, 65, 255)
+local DARK = Color3.fromRGB(8, 8, 18)
+local PANEL = Color3.fromRGB(19, 17, 34)
+local CARD = Color3.fromRGB(31, 26, 49)
+local WHITE = Color3.fromRGB(245, 240, 255)
+local GRAY = Color3.fromRGB(165, 155, 185)
+
+local function make(class, props, parent)
+    local obj = Instance.new(class)
+
+    for k, v in pairs(props) do
+        obj[k] = v
+    end
+
+    obj.Parent = parent
+    return obj
+end
+
+local function round(obj, radius)
+    make("UICorner", {
+        CornerRadius = UDim.new(0, radius)
+    }, obj)
+end
+
+local function outline(obj, color, thickness)
+    return make("UIStroke", {
+        Color = color,
+        Thickness = thickness or 1
+    }, obj)
+end
+
+local gui = make("ScreenGui", {
+    Name = "ToxicDuplicatorVIP",
+    ResetOnSpawn = false,
+    DisplayOrder = 999,
+}, playerGui)
+
+-- BOTON FLOTANTE
+local floating = make("TextButton", {
+    Name = "FloatingButton",
+    Size = UDim2.fromOffset(54, 54),
+    Position = UDim2.new(0, 15, 0.4, 0),
+    BackgroundColor3 = PANEL,
+    Text = "✦",
+    TextColor3 = PURPLE,
+    TextSize = 30,
+    Font = Enum.Font.GothamBlack
