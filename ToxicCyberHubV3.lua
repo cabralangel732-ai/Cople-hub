@@ -1,6 +1,5 @@
 --========================================================
--- ☣️ TOXIC CYBER HUB VIP V3 | ULTRA OP NEON EDITION
--- MULTI-GAME SUPPORT & KILL AURA RADAR RANGE CONTROL
+-- ☣️ TOXIC CYBER HUB VIP V3 | FULL MOBILE EDITION + MINIMIZE BUTTON
 --========================================================
 
 local Players = game:GetService("Players")
@@ -20,7 +19,7 @@ if old then old:Destroy() end
 
 -- Tabla de Juegos Registrados por ID Numérico (PlaceId)
 local GameIDs = {
-    ["Saltar por semillas"] = 0,
+    ["Saltar por semillas"] = 96995491488865,
     ["Alimentar a un mosquito"] = 0,
     ["Romper y robar un huevo"] = 0,
     ["Pozo de Pelea de Espadas"] = 0
@@ -28,7 +27,7 @@ local GameIDs = {
 
 print("📌 Juego actual detectado con PlaceId:", game.PlaceId)
 
--- Colores Neón Exactos (Diseño VIP)
+-- Colores Neón
 local GREEN = Color3.fromRGB(0, 255, 100)
 local DARK_BG = Color3.fromRGB(4, 10, 7)
 local PANEL_BG = Color3.fromRGB(8, 20, 14)
@@ -42,7 +41,7 @@ local Features = {
     JumpPower = 50, JumpPowerToggle = false,
     Noclip = false, InfiniteJump = false,
     KillAura = false, KillAuraRange = 25,
-    ESPPlayers = false, ESPFruits = false, Aimbot = false
+    ESPPlayers = false
 }
 
 -- ScreenGui Principal
@@ -54,6 +53,31 @@ gui.DisplayOrder = 999999
 pcall(function() gui.Parent = CoreGui end)
 if not gui.Parent then gui.Parent = playerGui end
 
+-- ==========================================
+-- BOTÓN FLOTANTE PARA ABRIR / CERRAR (MINIMIZAR)
+-- ==========================================
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Name = "OpenCloseBtn"
+toggleBtn.Size = UDim2.new(0, 48, 0, 48)
+toggleBtn.Position = UDim2.new(0, 20, 0.4, 0)
+toggleBtn.BackgroundColor3 = DARK_BG
+toggleBtn.Text = "☣"
+toggleBtn.TextColor3 = GREEN
+toggleBtn.TextSize = 28
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.Active = true
+toggleBtn.Draggable = true -- Permite moverlo en la pantalla táctil
+toggleBtn.Parent = gui
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(1, 0)
+btnCorner.Parent = toggleBtn
+
+local btnStroke = Instance.new("UIStroke")
+btnStroke.Color = GREEN
+btnStroke.Thickness = 2
+btnStroke.Parent = toggleBtn
+
 -- Ventana Principal
 local main = Instance.new("Frame")
 main.Name = "Main"
@@ -63,7 +87,13 @@ main.Position = UDim2.new(0.5, 0, 0.5, 0)
 main.BackgroundColor3 = DARK_BG
 main.BorderSizePixel = 0
 main.Active = true
+main.Visible = true
 main.Parent = gui
+
+-- Lógica para abrir y cerrar al tocar el botón flotante
+toggleBtn.Activated:Connect(function()
+    main.Visible = not main.Visible
+end)
 
 local limit = Instance.new("UISizeConstraint")
 limit.MinSize = Vector2.new(520, 350)
@@ -137,11 +167,12 @@ closeBtn.TextSize = 18
 closeBtn.Font = Enum.Font.GothamBold
 closeBtn.Parent = header
 
+-- Botón de cerrar la ventana principal (la oculta y deja el botón flotante)
 closeBtn.Activated:Connect(function()
-    gui:Destroy()
+    main.Visible = false
 end)
 
--- Sidebar (Menú Izquierdo)
+-- Sidebar
 local sidebar = Instance.new("ScrollingFrame")
 sidebar.Position = UDim2.new(0, 10, 0, 58)
 sidebar.Size = UDim2.new(0, 125, 1, -82)
@@ -222,12 +253,12 @@ local function createCard(parent, titleText, iconText)
     cardTitle.Parent = card
 
     local list = Instance.new("UIListLayout")
-    list.Padding = UDim.new(0, 4)
+    list.Padding = UDim.new(0, 6)
     list.SortOrder = Enum.SortOrder.LayoutOrder
     list.Parent = card
 
     local pad = Instance.new("UIPadding")
-    pad.PaddingTop = UDim.new(0, 30)
+    pad.PaddingTop = UDim.new(0, 32)
     pad.PaddingLeft = UDim.new(0, 8)
     pad.PaddingRight = UDim.new(0, 8)
     pad.PaddingBottom = UDim.new(0, 8)
@@ -239,7 +270,7 @@ end
 -- Creador de Toggles
 local function addToggle(card, text, default, callback)
     local row = Instance.new("Frame")
-    row.Size = UDim2.new(1, 0, 0, 22)
+    row.Size = UDim2.new(1, 0, 0, 24)
     row.BackgroundTransparency = 1
     row.Parent = card
 
@@ -283,10 +314,10 @@ local function addToggle(card, text, default, callback)
     end)
 end
 
--- Creador de Inputs (WalkSpeed / JumpPower / Kill Aura Radar)
+-- Creador de Inputs (WalkSpeed / JumpPower)
 local function addInputToggle(card, text, valText, default, callback)
     local row = Instance.new("Frame")
-    row.Size = UDim2.new(1, 0, 0, 22)
+    row.Size = UDim2.new(1, 0, 0, 24)
     row.BackgroundTransparency = 1
     row.Parent = card
 
@@ -301,8 +332,8 @@ local function addInputToggle(card, text, valText, default, callback)
     lbl.Parent = row
 
     local box = Instance.new("TextBox")
-    box.Size = UDim2.new(0, 38, 0, 16)
-    box.Position = UDim2.new(1, -78, 0.5, -8)
+    box.Size = UDim2.new(0, 38, 0, 18)
+    box.Position = UDim2.new(1, -78, 0.5, -9)
     box.BackgroundColor3 = PANEL_BG
     box.Text = valText
     box.TextColor3 = GREEN
@@ -345,12 +376,12 @@ local function addInputToggle(card, text, valText, default, callback)
         state = not state
         tog.BackgroundColor3 = state and GREEN or OFF_TOGGLE
         knob.Position = state and UDim2.new(1, -14, 0.5, -6) or UDim2.new(0, 2, 0.5, -6)
-        if callback then callback(state, tonumber(box.Text) or 25) end
+        if callback then callback(state, tonumber(box.Text) or valText) end
     end)
 
     box.FocusLost:Connect(function()
         if callback and state then
-            callback(true, tonumber(box.Text) or 25)
+            callback(true, tonumber(box.Text) or valText)
         end
     end)
 end
@@ -358,7 +389,7 @@ end
 -- Botón de Teleport
 local function addGameButton(card, gameName, placeId)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 24)
+    btn.Size = UDim2.new(1, 0, 0, 26)
     btn.BackgroundColor3 = PANEL_BG
     btn.Text = "🎮 " .. gameName
     btn.TextColor3 = WHITE
@@ -407,7 +438,7 @@ local function createPage(pageName)
     p.Parent = pageContainer
 
     local grid = Instance.new("UIGridLayout")
-    grid.CellSize = UDim2.new(0.485, 0, 0, 150)
+    grid.CellSize = UDim2.new(0.485, 0, 0, 160)
     grid.CellPadding = UDim2.new(0.03, 0, 0, 8)
     grid.SortOrder = Enum.SortOrder.LayoutOrder
     grid.Parent = p
@@ -422,16 +453,16 @@ for _, t in ipairs(tabs) do createPage(t.name) end
 local homePage = pages["Home"]
 
 local afCard = createCard(homePage, "Auto Farm", "🎯")
-addToggle(afCard, "Auto Farm Level", true)
-addToggle(afCard, "Auto Farm Fruits", false)
-addToggle(afCard, "Auto Farm Bosses", false)
+addToggle(afCard, "Auto Farm Level", false, function(s) print("Auto Farm Level:", s) end)
+addToggle(afCard, "Auto Farm Fruits", false, function(s) print("Auto Farm Fruits:", s) end)
+addToggle(afCard, "Auto Farm Bosses", false, function(s) print("Auto Farm Bosses:", s) end)
 
 local plCard = createCard(homePage, "Player", "👤")
-addInputToggle(plCard, "WalkSpeed", "16", true, function(s, val)
+addInputToggle(plCard, "WalkSpeed", "16", false, function(s, val)
     Features.WalkSpeedToggle = s
     Features.WalkSpeed = val or 16
 end)
-addInputToggle(plCard, "JumpPower", "50", true, function(s, val)
+addInputToggle(plCard, "JumpPower", "50", false, function(s, val)
     Features.JumpPowerToggle = s
     Features.JumpPower = val or 50
 end)
@@ -439,8 +470,8 @@ addToggle(plCard, "No Clip", false, function(s) Features.Noclip = s end)
 addToggle(plCard, "Infinite Jump", false, function(s) Features.InfiniteJump = s end)
 
 local cmCard = createCard(homePage, "Combat", "🎯")
-addToggle(cmCard, "ESP Players", true, function(s) Features.ESPPlayers = s end)
-addToggle(cmCard, "Aimbot", false, function(s) Features.Aimbot = s end)
+addToggle(cmCard, "ESP Players", false, function(s) Features.ESPPlayers = s end)
+addToggle(cmCard, "Aimbot", false, function(s) print("Aimbot:", s) end)
 addInputToggle(cmCard, "Kill Aura Range", "25", false, function(s, val)
     Features.KillAura = s
     Features.KillAuraRange = val or 25
@@ -493,38 +524,19 @@ for _, t in ipairs(tabs) do
     end
 end
 
--- LÓGICA DE KILL AURA CON RADAR
-task.spawn(function()
-    while true do
-        task.wait(0.1)
-        if Features.KillAura then
-            pcall(function()
-                local char = player.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    for _, p in ipairs(Players:GetPlayers()) do
-                        if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                            local targetHrp = p.Character.HumanoidRootPart
-                            local dist = (hrp.Position - targetHrp.Position).Magnitude
-                            if dist <= Features.KillAuraRange then
-                                local tool = char:FindFirstChildOfClass("Tool")
-                                if tool then tool:Activate() end
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- WalkSpeed, JumpPower y Noclip Loop
+-- BUCLE PRINCIPAL DE FUNCIONES (WalkSpeed, JumpPower, Noclip, etc.)
 RunService.Stepped:Connect(function()
     pcall(function()
         local char = player.Character
         if char and char:FindFirstChild("Humanoid") then
-            if Features.WalkSpeedToggle then char.Humanoid.WalkSpeed = Features.WalkSpeed end
-            if Features.JumpPowerToggle then char.Humanoid.UseJumpPower = true; char.Humanoid.JumpPower = Features.JumpPower end
+            local humanoid = char.Humanoid
+            if Features.WalkSpeedToggle then
+                humanoid.WalkSpeed = Features.WalkSpeed
+            end
+            if Features.JumpPowerToggle then
+                humanoid.UseJumpPower = true
+                humanoid.JumpPower = Features.JumpPower
+            end
             if Features.Noclip then
                 for _, part in ipairs(char:GetDescendants()) do
                     if part:IsA("BasePart") then part.CanCollide = false end
@@ -534,7 +546,7 @@ RunService.Stepped:Connect(function()
     end)
 end)
 
--- Infinite Jump
+-- Infinite Jump Activo
 UserInputService.JumpRequest:Connect(function()
     if Features.InfiniteJump then
         local char = player.Character
@@ -544,7 +556,7 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- Arrastrar en Android (Touch)
+-- Arrastrar la ventana principal en Android
 local dragging, dragStart, startPos
 header.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -567,4 +579,4 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
-print("TOXIC CYBER HUB VIP V3 CARGADO EXITOSAMENTE")
+print("TOXIC CYBER HUB VIP V3 CON BOTÓN FLOTANTE CARGADO")
