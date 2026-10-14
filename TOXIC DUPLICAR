@@ -1,13 +1,18 @@
---====================================================
--- TOXIC DUPLICATOR VIP
--- STEAL A SEED | PURPLE GOD EDITION
--- INTERFAZ MOVIL INDEPENDIENTE
---====================================================
+--==================================================
+-- TOXIC DUPLICATOR VIP V5
+-- PURPLE GOD EDITION | MOBILE UI
+--==================================================
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
+
+if not player then
+    warn("Ejecuta desde un entorno LocalScript compatible.")
+    return
+end
+
 local playerGui = player:WaitForChild("PlayerGui")
 
 local old = playerGui:FindFirstChild("ToxicDuplicatorVIP")
@@ -16,49 +21,210 @@ if old then
 end
 
 local PURPLE = Color3.fromRGB(180, 65, 255)
-local DARK = Color3.fromRGB(8, 8, 18)
-local PANEL = Color3.fromRGB(19, 17, 34)
-local CARD = Color3.fromRGB(31, 26, 49)
+local DARK = Color3.fromRGB(9, 8, 19)
+local PANEL = Color3.fromRGB(20, 17, 35)
 local WHITE = Color3.fromRGB(245, 240, 255)
-local GRAY = Color3.fromRGB(165, 155, 185)
 
-local function make(class, props, parent)
-    local obj = Instance.new(class)
+local gui = Instance.new("ScreenGui")
+gui.Name = "ToxicDuplicatorVIP"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 999
+gui.Parent = playerGui
 
-    for k, v in pairs(props) do
-        obj[k] = v
+local floating = Instance.new("TextButton")
+floating.Name = "FloatingButton"
+floating.Size = UDim2.fromOffset(54, 54)
+floating.Position = UDim2.new(0, 15, 0.4, 0)
+floating.BackgroundColor3 = PANEL
+floating.Text = "✦"
+floating.TextColor3 = PURPLE
+floating.TextSize = 30
+floating.Font = Enum.Font.GothamBlack
+floating.Parent = gui
+
+Instance.new("UICorner", floating).CornerRadius =
+    UDim.new(1, 0)
+
+local floatStroke = Instance.new("UIStroke")
+floatStroke.Color = PURPLE
+floatStroke.Thickness = 2
+floatStroke.Parent = floating
+
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.Position = UDim2.fromScale(0.5, 0.5)
+main.Size = UDim2.new(0.9, 0, 0, 310)
+main.BackgroundColor3 = DARK
+main.BorderSizePixel = 0
+main.Parent = gui
+
+local constraint = Instance.new("UISizeConstraint")
+constraint.MinSize = Vector2.new(280, 310)
+constraint.MaxSize = Vector2.new(440, 310)
+constraint.Parent = main
+
+Instance.new("UICorner", main).CornerRadius =
+    UDim.new(0, 15)
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = PURPLE
+stroke.Thickness = 2
+stroke.Parent = main
+
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 62)
+header.BackgroundColor3 = PANEL
+header.BorderSizePixel = 0
+header.Parent = main
+
+Instance.new("UICorner", header).CornerRadius =
+    UDim.new(0, 14)
+
+local title = Instance.new("TextLabel")
+title.Position = UDim2.fromOffset(14, 6)
+title.Size = UDim2.new(1, -60, 0, 30)
+title.BackgroundTransparency = 1
+title.Text = "TOXIC DUPLICATOR"
+title.TextColor3 = WHITE
+title.TextSize = 18
+title.Font = Enum.Font.GothamBlack
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = header
+
+local subtitle = Instance.new("TextLabel")
+subtitle.Position = UDim2.fromOffset(15, 34)
+subtitle.Size = UDim2.new(1, -60, 0, 17)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "PURPLE GOD EDITION"
+subtitle.TextColor3 = PURPLE
+subtitle.TextSize = 10
+subtitle.Font = Enum.Font.GothamBold
+subtitle.TextXAlignment = Enum.TextXAlignment.Left
+subtitle.Parent = header
+
+local close = Instance.new("TextButton")
+close.Position = UDim2.new(1, -40, 0, 15)
+close.Size = UDim2.fromOffset(27, 27)
+close.BackgroundColor3 = Color3.fromRGB(40, 30, 55)
+close.Text = "×"
+close.TextColor3 = WHITE
+close.TextSize = 22
+close.Font = Enum.Font.GothamBold
+close.Parent = header
+
+Instance.new("UICorner", close).CornerRadius =
+    UDim.new(0, 8)
+
+local description = Instance.new("TextLabel")
+description.Position = UDim2.fromOffset(15, 82)
+description.Size = UDim2.new(1, -30, 0, 45)
+description.BackgroundTransparency = 1
+description.Text = "STEAL A SEED\nPanel visual de plantas"
+description.TextColor3 = WHITE
+description.TextSize = 15
+description.Font = Enum.Font.GothamBold
+description.TextWrapped = true
+description.Parent = main
+
+local input = Instance.new("TextBox")
+input.Position = UDim2.fromOffset(15, 140)
+input.Size = UDim2.new(1, -30, 0, 42)
+input.BackgroundColor3 = PANEL
+input.Text = ""
+input.PlaceholderText = "Nombre de la planta..."
+input.PlaceholderColor3 = Color3.fromRGB(155, 145, 175)
+input.TextColor3 = WHITE
+input.TextSize = 14
+input.Font = Enum.Font.Gotham
+input.ClearTextOnFocus = false
+input.Parent = main
+
+Instance.new("UICorner", input).CornerRadius =
+    UDim.new(0, 9)
+
+local inputStroke = Instance.new("UIStroke")
+inputStroke.Color = PURPLE
+inputStroke.Thickness = 1
+inputStroke.Parent = input
+
+local action = Instance.new("TextButton")
+action.Position = UDim2.fromOffset(15, 194)
+action.Size = UDim2.new(1, -30, 0, 43)
+action.BackgroundColor3 = PURPLE
+action.Text = "✦  REGISTRAR PLANTA"
+action.TextColor3 = WHITE
+action.TextSize = 13
+action.Font = Enum.Font.GothamBlack
+action.Parent = main
+
+Instance.new("UICorner", action).CornerRadius =
+    UDim.new(0, 9)
+
+local status = Instance.new("TextLabel")
+status.Position = UDim2.fromOffset(15, 249)
+status.Size = UDim2.new(1, -30, 0, 40)
+status.BackgroundColor3 = PANEL
+status.Text = "Sistema iniciado correctamente."
+status.TextColor3 = Color3.fromRGB(130, 255, 180)
+status.TextSize = 11
+status.Font = Enum.Font.Gotham
+status.TextWrapped = true
+status.Parent = main
+
+Instance.new("UICorner", status).CornerRadius =
+    UDim.new(0, 8)
+
+local registered = {}
+
+action.Activated:Connect(function()
+    local name = input.Text:match("^%s*(.-)%s*$")
+
+    if not name or name == "" then
+        status.Text = "Escribe un nombre primero."
+        status.TextColor3 = Color3.fromRGB(255, 110, 130)
+        return
     end
 
-    obj.Parent = parent
-    return obj
-end
+    table.insert(registered, name)
 
-local function round(obj, radius)
-    make("UICorner", {
-        CornerRadius = UDim.new(0, radius)
-    }, obj)
-end
+    status.Text = "Registrada: " .. name
+        .. " | Total: " .. #registered
+    status.TextColor3 = Color3.fromRGB(130, 255, 180)
 
-local function outline(obj, color, thickness)
-    return make("UIStroke", {
-        Color = color,
-        Thickness = thickness or 1
-    }, obj)
-end
+    input.Text = ""
+end)
 
-local gui = make("ScreenGui", {
-    Name = "ToxicDuplicatorVIP",
-    ResetOnSpawn = false,
-    DisplayOrder = 999,
-}, playerGui)
+close.Activated:Connect(function()
+    main.Visible = false
+end)
 
--- BOTON FLOTANTE
-local floating = make("TextButton", {
-    Name = "FloatingButton",
-    Size = UDim2.fromOffset(54, 54),
-    Position = UDim2.new(0, 15, 0.4, 0),
-    BackgroundColor3 = PANEL,
-    Text = "✦",
-    TextColor3 = PURPLE,
-    TextSize = 30,
-    Font = Enum.Font.GothamBlack
+floating.Activated:Connect(function()
+    main.Visible = not main.Visible
+end)
+
+task.spawn(function()
+    while gui.Parent do
+        TweenService:Create(
+            stroke,
+            TweenInfo.new(1),
+            {Color = Color3.fromRGB(100, 35, 190)}
+        ):Play()
+
+        task.wait(1)
+
+        if not gui.Parent then
+            break
+        end
+
+        TweenService:Create(
+            stroke,
+            TweenInfo.new(1),
+            {Color = PURPLE}
+        ):Play()
+
+        task.wait(1)
+    end
+end)
+
+print("[TOXIC DUPLICATOR VIP] UI cargada.")
